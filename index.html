@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO META TAGS (WAJIB UNTUK GOOGLE) -->
+  <title>PTI Satpol PP Kab. Kepulauan Anambas - Official Portal</title>
+  <meta name="description" content="Portal Resmi Unit Petugas Tindak Internal (PTI) Satpol PP Kabupaten Kepulauan Anambas. Layanan pengaduan pelanggaran (WBS), berita kegiatan, dan informasi regulasi.">
+  <meta name="keywords" content="Satpol PP Anambas, PTI Anambas, Lapor Satpol PP, Polisi Pamong Praja, Kepulauan Anambas, Whistleblowing System">
+  <meta name="author" content="Pemerintah Kabupaten Kepulauan Anambas">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook / WhatsApp Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pti-anambas.vercel.app/">
+  <meta property="og:title" content="PTI Satpol PP Kab. Kepulauan Anambas">
+  <meta property="og:description" content="Menjaga Marwah, Menegakkan Disiplin. Portal resmi pengawasan dan pengaduan Satpol PP Anambas.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1200">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://pti-anambas.vercel.app/">
+  <meta property="twitter:title" content="PTI Satpol PP Kab. Kepulauan Anambas">
+  <meta property="twitter:description" content="Menjaga Marwah, Menegakkan Disiplin. Portal resmi pengawasan dan pengaduan Satpol PP Anambas.">
+  <meta property="twitter:image" content="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1200">
+  
+  <!-- Frameworks & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    window.onerror = function(msg, url, line) { console.error("Err:", msg); document.getElementById('globalLoader').style.display = 'none'; };
+    
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+          colors: { pti: { light: '#e0f2fe', DEFAULT: '#0f4c81', dark: '#082f49', gold: '#f59e0b' } },
+          boxShadow: { 
+            'glow': '0 0 25px rgba(15, 76, 129, 0.2)', 
+            'soft': '0 20px 40px -15px rgba(0, 0, 0, 0.05)',
+            'card': '0 10px 30px -5px rgba(0,0,0,0.06)' 
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #ffffff; color: #334155; overflow-x: hidden; }
+    
+    .glass-nav { 
+        background: rgba(255, 255, 255, 0.95); 
+        backdrop-filter: blur(16px); 
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255,255,255,0.6);
+    }
+
+    .parallax-bg {
+        background-attachment: fixed !important;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    /* Gallery Styles */
+    .masonry-grid { display: column; }
+    @media (min-width: 768px) { .masonry-grid { column-count: 2; column-gap: 1.5rem; } }
+    @media (min-width: 1024px) { .masonry-grid { column-count: 3; column-gap: 2rem; } }
+    .masonry-item { break-inside: avoid; margin-bottom: 1.5rem; }
+    
+    /* Lightbox */
+    .lightbox { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+
+    .toast { position: fixed; top: 110px; right: 20px; background: #0f172a; color: white; padding: 14px 24px; border-radius: 16px; animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3); }
+    .loader { border: 3px solid #f1f5f9; border-top: 3px solid #0f4c81; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .skeleton { background: linear-gradient(90deg, #f8fafc 25%, #e2e8f0 50%, #f8fafc 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 12px; }
+    
+    /* Ticket Styles */
+    .ticket-stub { border-right: 2px dashed #cbd5e1; position: relative; }
+    .ticket-stub::after { content: ''; position: absolute; right: -10px; top: -10px; width: 20px; height: 20px; background: #fff; border-radius: 50%; }
+    .ticket-stub::before { content: ''; position: absolute; right: -10px; bottom: -10px; width: 20px; height: 20px; background: #fff; border-radius: 50%; }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    dialog::backdrop { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  </style>
+ </head>
+ <body class="antialiased flex flex-col min-h-screen selection:bg-pti selection:text-white">
+
+  <div id="globalLoader" class="fixed inset-0 z-[999] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="loader mb-6"></div>
+    <p class="text-slate-400 text-[10px] font-bold tracking-[0.3em] uppercase">Memuat Sistem...</p>
+  </div>
+
+  <div id="app" class="flex flex-col flex-grow"></div>
+  <div id="toast-container"></div>
+
+  <!-- Lightbox Container -->
+  <div id="lightbox" class="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center p-4 lightbox" onclick="this.classList.remove('open')">
+    <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl scale-95 transition duration-300">
+    <button class="absolute top-8 right-8 text-white text-4xl hover:text-red-500 transition"><i class="fa-solid fa-xmark"></i></button>
+    <div id="lightboxCap" class="absolute bottom-8 left-0 w-full text-center text-white/80 text-lg font-serif italic px-6"></div>
+  </div>
+
+  <button onclick="navigate('lapor')" class="fixed bottom-8 right-8 z-50 bg-gradient-to-br from-pti-gold to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl shadow-orange-500/30 flex items-center justify-center text-xl hover:scale-110 transition duration-300 group">
+    <i class="fa-solid fa-bullhorn group-hover:animate-bounce"></i>
+    <span class="absolute right-16 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition translate-x-2 group-hover:translate-x-0 whitespace-nowrap pointer-events-none shadow-xl">Lapor Pelanggaran</span>
+  </button>
+  
+  <!-- Login Modal -->
+  <dialog id="loginModal" class="p-0 rounded-3xl shadow-2xl bg-transparent border-none w-96 z-[100]">
+    <div class="bg-white p-10 text-center rounded-3xl relative overflow-hidden border border-blue-100">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-pti to-pti-gold"></div>
+        <div class="w-16 h-16 bg-slate-50 text-pti rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl shadow-inner border border-blue-50"><i class="fa-solid fa-user-shield"></i></div>
+        <h2 class="text-2xl font-bold mb-2 text-slate-800 font-serif">Akses Pimpinan</h2>
+        <p class="text-slate-400 text-sm mb-8">Area terbatas khusus admin unit.</p>
+        <form onsubmit="event.preventDefault(); handleLogin();">
+            <input type="email" id="emailInput" class="w-full border border-slate-200 bg-slate-50 p-4 rounded-xl mb-3 outline-none focus:border-pti focus:bg-white transition text-sm font-medium" placeholder="Email Admin" required>
+            <input type="password" id="passInput" class="w-full border border-slate-200 bg-slate-50 p-4 rounded-xl mb-6 outline-none focus:border-pti focus:bg-white transition text-sm font-medium" placeholder="Password" required>
+            <button type="submit" class="w-full bg-pti text-white py-4 rounded-xl font-bold hover:bg-pti-dark transition shadow-lg shadow-pti/20">Masuk Dashboard</button>
+        </form>
+        <button onclick="document.getElementById('loginModal').close()" class="mt-6 text-xs text-slate-400 font-bold uppercase hover:text-pti transition">Batal</button>
+    </div>
+  </dialog>
+
+  <!-- Confirm Modal -->
+  <dialog id="confirmModal" class="p-0 rounded-3xl shadow-2xl bg-transparent border-none w-[90%] max-w-sm z-[110]">
+    <div class="bg-white p-8 rounded-3xl text-center border border-blue-100">
+        <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3 class="text-lg font-bold text-slate-800 mb-2">Konfirmasi Tindakan</h3>
+        <p id="confirmMessage" class="text-slate-500 text-sm mb-8">Apakah Anda yakin ingin melanjutkan?</p>
+        <div class="flex gap-3">
+            <button onclick="document.getElementById('confirmModal').close()" class="flex-1 py-3 bg-slate-50 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-100 transition">Batal</button>
+            <button id="confirmYesBtn" class="flex-1 py-3 bg-pti text-white rounded-xl font-bold text-sm hover:bg-pti-dark transition shadow-lg shadow-pti/20">Ya, Lanjutkan</button>
+        </div>
+    </div>
+  </dialog>
+
+  <!-- Success Ticket Modal -->
+  <dialog id="ticketModal" class="p-0 rounded-3xl shadow-2xl bg-transparent border-none w-[90%] max-w-md z-[110]">
+    <div class="bg-white p-0 rounded-3xl overflow-hidden border border-blue-100 relative">
+        <div class="bg-green-50 p-8 text-center border-b border-green-100">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-check"></i></div>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">Laporan Diterima</h3>
+            <p class="text-slate-500 text-sm">Simpan Kode Tiket ini untuk mengecek status laporan Anda.</p>
+        </div>
+        <div class="p-8 bg-white">
+            <div class="bg-slate-50 border-2 border-dashed border-slate-300 p-6 rounded-2xl text-center mb-6 group cursor-pointer hover:bg-slate-100 transition" onclick="navigator.clipboard.writeText(document.getElementById('ticketCodeDisp').innerText); window.showToast('Kode Disalin!')">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Kode Tiket (Klik untuk Salin)</span>
+                <div id="ticketCodeDisp" class="text-4xl font-mono font-bold text-pti tracking-wider">---</div>
+            </div>
+            <button onclick="document.getElementById('ticketModal').close(); window.navigate('home')" class="w-full py-4 bg-pti text-white rounded-xl font-bold hover:bg-pti-dark transition shadow-lg">Saya Mengerti</button>
+        </div>
+    </div>
+  </dialog>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // --- URL PARAMETER HANDLING FOR SEO ---
+    // Mengambil parameter ?page=... dari URL agar Google bisa mengindeks halaman spesifik
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialPage = urlParams.get('page') || 'home';
+
+    window.state = { page: initialPage, subPage: 'form', user: null, mobileMenu: false, adminTab: 'hero', adminSidebar: false, loading: true, searchTerm: '' };
+    
+    const DEFAULT_FEATURES = [ 
+        {id:'f1', icon:'fa-gavel', title:'Penindakan Disiplin', desc:'Penanganan pelanggaran indisipliner personil.', longDesc:'PTI berwenang melakukan pemanggilan, pemeriksaan (BAP), dan menyelenggarakan Sidang Kode Etik.'}, 
+        {id:'f2', icon:'fa-eye', title:'Pengawasan Melekat', desc:'Monitoring kinerja & atribut personil rutin.', longDesc:'Melakukan pengawasan rutin (Gaktibplin) meliputi pemeriksaan kelengkapan Seragam Dinas (Gampol) dan sikap.'}, 
+        {id:'f3', icon:'fa-hand-holding-heart', title:'Pembinaan Mental', desc:'Bintalsik dan pencegahan pelanggaran.', longDesc:'Melaksanakan fungsi preventif melalui pembinaan mental dan fisik (Bintalsik) serta konseling.'} 
+    ];
+    const DEFAULT_REGULATIONS = [
+        {id:'r1', title:'Permendagri No. 16 Tahun 2023', cat:'SOP Satpol PP', link:'#'},
+        {id:'r2', title:'Perbup Kode Etik No 12', cat:'Peraturan Bupati', link:'#'},
+        {id:'r3', title:'PP Nomor 53 Tahun 2010', cat:'Disiplin PNS', link:'#'}
+    ];
+    const DEFAULT_GALLERY = [
+        {id:'g1', img:'https://images.unsplash.com/photo-1555862124-b46f3bd41171?q=80&w=800', caption:'Apel Pagi Gabungan'},
+        {id:'g2', img:'https://images.unsplash.com/photo-1588502919587-47555d68f0c6?q=80&w=800', caption:'Pengamanan Aset Daerah'},
+        {id:'g3', img:'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?q=80&w=800', caption:'Patroli Rutin Wilayah'},
+        {id:'g4', img:'https://images.unsplash.com/photo-1626265774643-f1943311a86b?q=80&w=800', caption:'Giat Sosial Masyarakat'},
+        {id:'g5', img:'https://images.unsplash.com/photo-1591285281230-5319b340627f?q=80&w=800', caption:'Pelatihan Fisik Personil'}
+    ];
+
+    window.appData = {
+        config: {
+            heroTitle: "Menjaga Marwah,<br>Menegakkan <span class='text-pti-gold italic'>Disiplin.</span>",
+            heroDesc: "Garda terdepan dalam pengawasan kode etik dan disiplin personil Satpol PP Kabupaten Kepulauan Anambas.",
+            heroImage: "https://images.unsplash.com/photo-1542744173-8e7e53415d09?q=80&w=2400", 
+            wbsImage: "https://images.unsplash.com/photo-1554224155-8d04f1800b8e?q=80&w=2400",
+            address: "Jl. Imam Bonjol, Tarempa, Siantan", phone: "(0772) 312345", email: "pti@anambaskab.go.id",
+            cmdName: "Dino Manarso, S.IP", cmdRole: "KOMANDAN PTI", cmdQuote: "Disiplin bukan hanya tentang aturan, tapi tentang harga diri.",
+            cmdImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400",
+            stats: [ {val:"150+", label:"Personil Diawasi"}, {val:"48", label:"Giat Penertiban"}, {val:"98%", label:"Kepatuhan SOP"} ]
+        },
+        profile: { visi: "Terwujudnya Satpol PP Profesional.", misi: ["Meningkatkan disiplin."], tupoksi: ["Pengawasan"] },
+        articles: [], members: [], regulations: [], features: [], reports: [], gallery: []
+    };
+
+    // --- FIREBASE CONFIG ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyCG7FMbn28_AEFNE98hKkxPCgCqUVEf9Y4",
+      authDomain: "pti-anambas-web.firebaseapp.com",
+      projectId: "pti-anambas-web",
+      storageBucket: "pti-anambas-web.firebasestorage.app",
+      messagingSenderId: "975597037439",
+      appId: "1:975597037439:web:a4a109477b1cabcce51c4a"
+    };
+
+    let app, auth, db;
+
+    async function init() {
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            onAuthStateChanged(auth, (u) => { window.state.user = u; if(!u && window.state.page==='admin') navigate('home'); render(); });
+            await loadData();
+        } catch(e) { console.error(e); document.getElementById('globalLoader').style.display='none'; render(); }
+    }
+
+    async function loadData() {
+        window.state.loading = true; render();
+        try {
+            const cfgSnap = await getDoc(doc(db, "settings", "general"));
+            if(cfgSnap.exists()) {
+                const d = cfgSnap.data();
+                window.appData.config = { ...window.appData.config, ...d.config };
+                window.appData.profile = { ...window.appData.profile, ...d.profile };
+            }
+            const [arts, mems, regs, feats, rpts, gals] = await Promise.all([
+                getDocs(collection(db, "articles")), getDocs(collection(db, "members")),
+                getDocs(collection(db, "regulations")), getDocs(collection(db, "features")),
+                getDocs(collection(db, "reports")), getDocs(collection(db, "gallery"))
+            ]);
+
+            window.appData.articles = arts.docs.map(d=>({id:d.id, ...d.data()}));
+            window.appData.members = mems.docs.map(d=>({id:d.id, ...d.data()}));
+            window.appData.regulations = regs.docs.map(d=>({id:d.id, ...d.data()}));
+            window.appData.features = feats.docs.map(d=>({id:d.id, ...d.data()}));
+            window.appData.reports = rpts.docs.map(d=>({id:d.id, ...d.data()}));
+            window.appData.gallery = gals.docs.map(d=>({id:d.id, ...d.data()}));
+
+            if(window.appData.members.length === 0) window.appData.members = [{id:'m1', name:'Ahmad Budiman', role:'Danru PTI', nip:'19800101', img:'https://placehold.co/150x150/1e40af/fff?text=AB'}];
+            if(window.appData.regulations.length === 0) window.appData.regulations = DEFAULT_REGULATIONS;
+            if(window.appData.features.length === 0) window.appData.features = DEFAULT_FEATURES;
+            if(window.appData.gallery.length === 0) window.appData.gallery = DEFAULT_GALLERY;
+        } catch(e) { console.warn(e); }
+        window.state.loading = false;
+        document.getElementById('globalLoader').style.display='none';
+        render();
+        initScrollReveal();
+    }
+
+    function initScrollReveal() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if(entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const counters = document.querySelectorAll('.counter');
+        const obsCounter = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if(entry.isIntersecting) { const el=entry.target; const target=parseInt(el.getAttribute('data-target')); let count=0; const inc=target/40; const update=()=>{ count+=inc; if(count<target){ el.innerText=Math.ceil(count)+(el.innerText.includes('+')?'+':'')+(el.innerText.includes('%')?'%':''); requestAnimationFrame(update); }else{ el.innerText=target+(el.getAttribute('data-suffix')||''); } }; update(); obsCounter.unobserve(el); } });
+        });
+        counters.forEach(c => obsCounter.observe(c));
+    }
+
+    // --- NAVIGATION WITH URL UPDATES ---
+    window.navigate = (p) => { 
+        if(p==='admin' && !window.state.user){ document.getElementById('loginModal').showModal(); return; }
+        
+        // Update State
+        window.state.page = p; 
+        window.state.subPage = 'form'; 
+        window.state.mobileMenu = false; 
+        window.state.adminSidebar = false; 
+        
+        // Update URL (Penting untuk SEO agar halaman bisa di-bookmark/index)
+        if(p === 'home') {
+            window.history.pushState({page: p}, "", "/");
+            document.title = "PTI Satpol PP Kab. Kepulauan Anambas - Official";
+        } else {
+            window.history.pushState({page: p}, "", `?page=${p}`);
+            document.title = `${p.charAt(0).toUpperCase() + p.slice(1)} - PTI Satpol PP Anambas`;
+        }
+
+        window.scrollTo(0,0); 
+        render(); 
+        setTimeout(initScrollReveal, 100);
+    }
+    
+    // Handle tombol back browser
+    window.onpopstate = (event) => {
+        const p = new URLSearchParams(window.location.search).get('page') || 'home';
+        window.state.page = p;
+        render();
+    };
+
+    window.toggleMobile = () => { window.state.mobileMenu = !window.state.mobileMenu; render(); }
+    window.showToast = (msg, err=false) => { 
+        const c=document.getElementById('toast-container'); const t=document.createElement('div'); t.className='toast'; 
+        if(err) t.style.borderLeftColor='#ef4444'; t.innerHTML=`<i class="fa-solid ${err?'fa-circle-exclamation text-red-400':'fa-circle-check text-green-400'} text-lg"></i><span class="font-medium text-sm">${msg}</span>`; 
+        c.appendChild(t); setTimeout(()=>t.remove(),3500); 
+    }
+    window.handleLogin = async () => { try { await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value); document.getElementById('loginModal').close(); navigate('admin'); } catch(e) { showToast("Login Gagal", true); } }
+    window.handleLogout = async () => { await signOut(auth); navigate('home'); }
+    window.handleImageUpload = (file, cb) => { if(!file || !file.type.match('image.*')) return showToast("Harus File Gambar", true); const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.onload=()=>{ const c=document.createElement('canvas'); let w=i.width,h=i.height,m=800; if(w>h){if(w>m){h*=m/w;w=m}}else{if(h>m){w*=m/h;h=m}} c.width=w; c.height=h; c.getContext('2d').drawImage(i,0,0,w,h); cb(c.toDataURL('image/jpeg',0.7)); }; i.src=e.target.result; }; r.readAsDataURL(file); }
+    window.handleSearch = (val) => { window.state.searchTerm = val.toLowerCase(); render(); }
+    
+    // --- LIGHTBOX ---
+    window.openLightbox = (src, cap) => {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightboxImg').src = src;
+        document.getElementById('lightboxCap').innerText = cap || '';
+        lb.classList.add('open');
+    }
+
+    // --- TICKET TRACKING ---
+    window.checkTicket = async (e) => {
+        e.preventDefault();
+        const ticketId = document.getElementById('trackInput').value.trim();
+        if(!ticketId) return;
+        try {
+            const q = query(collection(db, "reports"), where("ticketId", "==", ticketId));
+            const snap = await getDocs(q);
+            const resDiv = document.getElementById('trackResult');
+            if(snap.empty) {
+                resDiv.innerHTML = `<div class="bg-red-50 p-6 rounded-2xl text-center border border-red-100"><i class="fa-solid fa-circle-xmark text-3xl text-red-500 mb-3"></i><h3 class="font-bold text-slate-800">Tiket Tidak Ditemukan</h3><p class="text-sm text-slate-500">Periksa kembali kode tiket Anda.</p></div>`;
+            } else {
+                const d = snap.docs[0].data();
+                const statusColor = d.status === 'Selesai' ? 'text-green-500 bg-green-50' : (d.status === 'Diproses' ? 'text-blue-500 bg-blue-50' : 'text-yellow-500 bg-yellow-50');
+                resDiv.innerHTML = `<div class="bg-white p-6 rounded-2xl border border-blue-100 shadow-lg"><div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-50"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Status Laporan</span><span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${statusColor}">${d.status || 'Diterima'}</span></div><div class="space-y-3"><div class="flex justify-between"><span class="text-sm text-slate-500">Tiket</span><span class="text-sm font-mono font-bold">${d.ticketId}</span></div><div class="flex justify-between"><span class="text-sm text-slate-500">Tanggal</span><span class="text-sm font-bold">${d.tanggal}</span></div><div class="flex justify-between"><span class="text-sm text-slate-500">Terlapor</span><span class="text-sm font-bold">${d.terlapor}</span></div></div><div class="mt-6 pt-4 border-t border-slate-50 text-center"><p class="text-xs text-slate-400">Terima kasih telah berpartisipasi menjaga integritas.</p></div></div>`;
+            }
+        } catch(err) { console.error(err); showToast("Gagal mengecek", true); }
+    }
+
+    window.submitReport = async (e) => {
+        e.preventDefault();
+        const ticketId = 'TIK-' + Math.floor(1000 + Math.random() * 9000);
+        try {
+            await addDoc(collection(db, "reports"), { 
+                ticketId: ticketId,
+                status: 'Diterima', // Initial Status
+                terlapor: document.getElementById('rptName').value, 
+                email: document.getElementById('rptEmail').value, 
+                tanggal: document.getElementById('rptDate').value, 
+                kronologi: document.getElementById('rptDesc').value, 
+                bukti: document.getElementById('rptEvidenceVal').value, 
+                waktu: new Date().toISOString() 
+            });
+            document.getElementById('ticketCodeDisp').innerText = ticketId;
+            document.getElementById('ticketModal').showModal();
+            e.target.reset();
+            document.getElementById('rptEvidencePrev').classList.add('hidden');
+            await loadData();
+        } catch(err) { showToast("Gagal Mengirim Laporan", true); }
+    }
+
+    window.updateReportStatus = async (id, newStatus) => {
+        try { await updateDoc(doc(db, "reports", id), { status: newStatus }); showToast("Status Diperbarui"); await loadData(); } catch(e){ showToast("Gagal Update", true); }
+    }
+
+    // --- UI HELPERS ---
+    window.viewArticle = (id) => { const a = window.appData.articles.find(x=>x.id===id); if(!a)return; const h=`<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onclick="this.remove()"><div class="bg-white w-full max-w-2xl max-h-[90vh] rounded-2xl overflow-hidden relative flex flex-col shadow-2xl border border-white/20" onclick="event.stopPropagation()"><button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition backdrop-blur-md"><i class="fa-solid fa-xmark"></i></button><div class="h-72 shrink-0 bg-slate-100"><img src="${a.img}" class="w-full h-full object-cover"></div><div class="p-8 overflow-y-auto"><span class="text-pti font-bold text-[10px] uppercase tracking-widest mb-2 block text-slate-400">${a.date} &bull; ${a.cat||'Berita'}</span><h2 class="text-3xl font-bold font-serif mb-6 text-slate-800 leading-tight">${a.title}</h2><p class="text-slate-600 leading-relaxed whitespace-pre-line text-lg">${a.content}</p></div></div></div>`; document.body.insertAdjacentHTML('beforeend', h); }
+    window.showFeatureDetail = (id) => { const f = window.appData.features.find(x => x.id === id) || DEFAULT_FEATURES.find(x => x.id === id); if(!f) return; const h=`<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onclick="this.remove()"><div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden relative shadow-2xl" onclick="event.stopPropagation()"><div class="bg-white p-10 text-center"><div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center text-pti text-3xl mx-auto mb-6 shadow-inner border border-blue-100"><i class="fa-solid ${f.icon}"></i></div><h3 class="text-2xl font-serif font-bold text-slate-800 mb-2">${f.title}</h3><div class="w-12 h-1 bg-pti mx-auto rounded-full"></div></div><div class="p-10 pt-4"><p class="text-slate-600 leading-relaxed text-justify mb-8 text-lg">${f.longDesc || f.desc}</p><button onclick="this.closest('.fixed').remove()" class="w-full py-4 bg-pti text-white rounded-xl font-bold hover:bg-pti-dark transition shadow-lg shadow-pti/30">Tutup</button></div></div></div>`; document.body.insertAdjacentHTML('beforeend', h); }
+
+    window.updateConfigDB = async (k, v) => { window.appData.config[k] = v; try { await updateDoc(doc(db, "settings", "general"), {config:window.appData.config}); showToast("Tersimpan"); if(k.includes('Image')||k.includes('Img')) render(); } catch(e){ showToast("Gagal", true); } }
+    window.saveCRUD_DB = async (t, id, d) => { try { if(id) { await updateDoc(doc(db, t, id), d); const i=window.appData[t].findIndex(x=>x.id===id); if(i!==-1) window.appData[t][i]={...window.appData[t][i],...d}; } else { const r=await addDoc(collection(db, t), d); window.appData[t].unshift({id:r.id,...d}); } document.querySelector('.fixed.z-\\[90\\]').remove(); render(); showToast("Berhasil"); } catch(e) { showToast("Gagal", true); } }
+    window.deleteItem_DB = (col, id) => { document.getElementById('confirmYesBtn').onclick = async () => { try { await deleteDoc(doc(db, col, id)); window.appData[col]=window.appData[col].filter(x=>x.id!==id); render(); showToast("Terhapus"); } catch(e){ showToast("Gagal", true); } document.getElementById('confirmModal').close(); }; document.getElementById('confirmModal').showModal(); }
+    
+    window.openEditor = (t, item=null) => {
+        const safe = s => (s||'').replace(/"/g,'&quot;');
+        const ImgInp = (v) => `<div class="mb-4 flex items-center gap-4"><img src="${v||''}" class="w-16 h-16 bg-slate-100 rounded-lg object-cover border border-blue-100" id="prevEd"><label class="bg-white border border-slate-200 px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-slate-50 transition">Upload Foto<input type="file" class="hidden" onchange="window.handleImageUpload(this.files[0],b=>{document.getElementById('fImg').value=b;document.getElementById('prevEd').src=b})"></label><input type="hidden" id="fImg" value="${v||''}"></div>`;
+        let f = '';
+        const InpStyle = "w-full border border-slate-200 p-3 rounded-lg mb-3 text-sm font-medium focus:border-pti outline-none transition";
+        if(t==='articles') f = `${ImgInp(item?.img)}<input id="fTitle" class="${InpStyle}" placeholder="Judul Berita" value="${safe(item?.title)}"><div class="grid grid-cols-2 gap-3 mb-3"><input id="fCat" class="${InpStyle} mb-0" placeholder="Kategori" value="${safe(item?.cat||'Giat')}"><input type="date" id="fDate" class="${InpStyle} mb-0" value="${item?.date||''}"></div><textarea id="fContent" class="${InpStyle} h-32" placeholder="Isi Berita...">${item?.content||''}</textarea>`;
+        else if(t==='members') f = `${ImgInp(item?.img)}<input id="fName" class="${InpStyle}" placeholder="Nama Personil" value="${safe(item?.name)}"><input id="fRole" class="${InpStyle}" placeholder="Jabatan" value="${safe(item?.role)}"><input id="fNip" class="${InpStyle}" placeholder="NIP" value="${safe(item?.nip)}">`;
+        else if(t==='regulations') f = `<input id="fTitle" class="${InpStyle}" placeholder="Nama Dokumen" value="${safe(item?.title)}"><input id="fCat" class="${InpStyle}" placeholder="Jenis/Kategori" value="${safe(item?.cat)}"><input id="fLink" class="${InpStyle}" placeholder="Link Download" value="${safe(item?.link)}">`;
+        else if(t==='features') f = `<input id="fTitle" class="${InpStyle}" placeholder="Judul Layanan" value="${safe(item?.title)}"><input id="fIcon" class="${InpStyle}" placeholder="Icon Class (fa-solid fa-gavel)" value="${safe(item?.icon)}"><textarea id="fDesc" class="${InpStyle} h-20" placeholder="Deskripsi Singkat">${item?.desc||''}</textarea><textarea id="fLongDesc" class="${InpStyle} h-32" placeholder="Penjelasan Lengkap">${item?.longDesc||''}</textarea>`;
+        else if(t==='gallery') f = `${ImgInp(item?.img)}<input id="fCaption" class="${InpStyle}" placeholder="Keterangan Foto (Caption)" value="${safe(item?.caption)}">`;
+
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in';
+        modal.innerHTML = `<div class="bg-white p-8 rounded-3xl w-full max-w-lg shadow-2xl border border-blue-100"><h3 class="text-xl font-bold mb-6 text-slate-800 capitalize">${item?'Edit':'Tambah'} ${t}</h3>${f}<div class="flex gap-3 mt-8"><button onclick="this.closest('.fixed').remove()" class="flex-1 py-3 border rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-50 transition">Batal</button><button onclick="submitEditor('${t}','${item?.id||''}')" class="flex-1 py-3 bg-pti text-white rounded-xl font-bold text-sm hover:bg-pti-dark transition shadow-lg">Simpan</button></div></div>`;
+        document.body.appendChild(modal);
+    }
+    window.submitEditor = (t, id) => {
+        let d={};
+        if(t==='articles') d={title:document.getElementById('fTitle').value, content:document.getElementById('fContent').value, date:document.getElementById('fDate').value, cat:document.getElementById('fCat').value, img:document.getElementById('fImg').value};
+        else if(t==='members') d={name:document.getElementById('fName').value, role:document.getElementById('fRole').value, nip:document.getElementById('fNip').value, img:document.getElementById('fImg').value};
+        else if(t==='regulations') d={title:document.getElementById('fTitle').value, cat:document.getElementById('fCat').value, link:document.getElementById('fLink').value};
+        else if(t==='features') d={title:document.getElementById('fTitle').value, icon:document.getElementById('fIcon').value, desc:document.getElementById('fDesc').value, longDesc:document.getElementById('fLongDesc').value};
+        else if(t==='gallery') d={caption:document.getElementById('fCaption').value, img:document.getElementById('fImg').value};
+        saveCRUD_DB(t, id||null, d);
+    }
+
+    window.render = () => {
+        const d = window.appData.config; const s = window.state; const app = document.getElementById('app');
+        
+        const Navbar = `
+            <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+                <div class="max-w-7xl mx-auto px-6 h-24 flex justify-between items-center">
+                    <div class="flex items-center gap-4 cursor-pointer group" onclick="navigate('home')">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pti to-pti-dark text-white rounded-xl flex items-center justify-center shadow-lg shadow-pti/30 group-hover:scale-105 transition duration-300"><img src="https://iili.io/Kyomv4I.png" class="w-8 h-8 object-contain drop-shadow-sm"></div>
+                        <div class="flex flex-col">
+                            <h1 class="font-bold text-lg md:text-xl leading-none font-serif text-slate-800 tracking-tight group-hover:text-pti transition">Petugas Tindak Internal (PTI)</h1>
+                            <p class="text-[10px] font-bold text-slate-400 tracking-wide uppercase mt-1.5">Satpol PP Kabupaten Kepulauan Anambas</p>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-full border border-slate-200/60 backdrop-blur-sm">
+                        ${['home','berita','regulasi','tentang'].map(p=>`<button onclick="navigate('${p}')" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-300 ${s.page===p?'bg-white text-pti shadow-sm scale-105':'text-slate-500 hover:text-pti hover:bg-slate-100'}">${p==='home'?'Beranda':p}</button>`).join('')}
+                    </div>
+                    <div class="hidden lg:flex items-center gap-3">
+                        <button onclick="${s.user?"navigate('admin')":"navigate('lapor')"}" class="bg-pti text-white px-7 py-3 rounded-full text-xs font-bold shadow-lg shadow-pti/20 hover:bg-pti-dark hover:shadow-pti/40 transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-0.5"><i class="fa-solid ${s.user?'fa-user-gear':'fa-bullhorn'}"></i> ${s.user?'Admin Dashboard':'Lapor WBS'}</button>
+                    </div>
+                    <button onclick="toggleMobile()" class="lg:hidden text-2xl text-slate-800 w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition"><i class="fa-solid fa-bars"></i></button>
+                </div>
+            </nav>
+            <div class="${s.mobileMenu?'block':'hidden'} fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm transition-opacity" onclick="toggleMobile()"></div>
+            <div class="fixed top-0 right-0 w-80 h-full bg-white z-[70] shadow-2xl p-8 transition-transform duration-300 ${s.mobileMenu?'translate-x-0':'translate-x-full'} flex flex-col gap-3 pt-28">
+                ${['home','berita','regulasi','tentang','lapor'].map(p=>`<button onclick="navigate('${p}')" class="text-left px-5 py-4 rounded-2xl font-bold text-sm capitalize hover:bg-slate-50 transition-colors ${s.page===p?'text-pti bg-blue-50/50':''}" >${p}</button>`).join('')}
+                <button onclick="navigate('admin')" class="text-left px-5 py-4 font-bold text-sm text-slate-400 border-t mt-auto flex items-center gap-3 hover:text-pti"><i class="fa-solid fa-lock"></i> Admin Panel</button>
+            </div>`;
+
+        const Skeleton = `<div class="animate-pulse space-y-6"><div class="skeleton h-80 w-full rounded-3xl"></div><div class="grid grid-cols-3 gap-6"><div class="skeleton h-40 rounded-2xl"></div><div class="skeleton h-40 rounded-2xl"></div><div class="skeleton h-40 rounded-2xl"></div></div></div>`;
+
+        // --- ADMIN PANEL ---
+        if(s.page === 'admin') {
+            const esc=s=>(s||'').replace(/"/g,'&quot;');
+            const Input=(l,k,v)=>`<div class="mb-5"><label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-wide">${l}</label><input class="w-full border border-slate-200 p-3.5 rounded-xl bg-white text-sm focus:border-pti focus:ring-4 focus:ring-pti/5 outline-none transition" value="${esc(v)}" onchange="window.updateConfigDB('${k}',this.value)"></div>`;
+            const ImgInput=(l,k,v)=>`<div class="mb-6"><label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-wide">${l}</label><div class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl bg-white"><img src="${v}" class="w-20 h-20 object-cover rounded-lg bg-slate-100 border" id="pv_${k}"><div><label class="cursor-pointer bg-white border border-slate-300 text-slate-700 px-5 py-2.5 rounded-lg font-bold text-xs hover:bg-slate-50 transition shadow-sm">Ganti Foto<input type="file" class="hidden" onchange="window.handleImageUpload(this.files[0], b=>{document.getElementById('pv_${k}').src=b; window.updateConfigDB('${k}',b)})"></label></div></div></div>`;
+            
+            let admContent = '';
+            if(s.adminTab==='hero') admContent = `<div class="bg-white p-8 md:p-10 rounded-3xl border border-blue-100 shadow-sm">${Input('Judul Utama (HTML Support)','heroTitle',d.heroTitle)}${Input('Deskripsi Singkat','heroDesc',d.heroDesc)}${ImgInput('Background Hero','heroImage',d.heroImage)}${ImgInput('Background WBS','wbsImage',d.wbsImage)}</div>`;
+            else if(s.adminTab==='commander') admContent = `<div class="bg-white p-8 md:p-10 rounded-3xl border border-blue-100 shadow-sm">${Input('Nama Lengkap','cmdName',d.cmdName)}${Input('Jabatan','cmdRole',d.cmdRole)}${Input('Kutipan Motivasi','cmdQuote',d.cmdQuote)}${ImgInput('Foto Profil','cmdImg',d.cmdImg)}</div>`;
+            else if(s.adminTab==='reports') {
+                const rpts = window.appData.reports || [];
+                admContent = `<div class="mb-8"><h3 class="font-bold capitalize text-2xl text-slate-800">Laporan Masuk (${rpts.length})</h3></div><div class="space-y-4">${rpts.length?rpts.map(r=>`
+                    <div class="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition">
+                        <div class="flex justify-between mb-2">
+                            <div class="flex items-center gap-3"><span class="font-bold text-slate-800 text-lg">${r.terlapor}</span><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${r.status==='Selesai'?'bg-green-100 text-green-600':r.status==='Diproses'?'bg-blue-100 text-blue-600':'bg-yellow-100 text-yellow-600'}">${r.status||'Diterima'}</span></div>
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">#${r.ticketId||'---'}</span>
+                        </div>
+                        <div class="text-xs text-pti font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-envelope"></i> ${r.email || 'Tidak ada email'}</div>
+                        <p class="text-sm text-slate-600 mb-5 bg-slate-50 p-4 rounded-xl leading-relaxed border border-slate-100">${r.kronologi}</p>
+                        ${r.bukti ? `<div class="mb-5 bg-blue-50 p-3 rounded-xl border border-blue-100 inline-block"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Bukti Lampiran:</span><img src="${r.bukti}" class="h-32 rounded-lg cursor-pointer hover:scale-105 transition shadow-sm border border-white" onclick="window.open(this.src)"></div>` : ''}
+                        <div class="flex flex-wrap gap-3 border-t border-slate-100 pt-4 items-center">
+                            <select onchange="window.updateReportStatus('${r.id}', this.value)" class="border border-slate-200 rounded-lg text-xs p-2 font-bold outline-none"><option value="Diterima" ${r.status==='Diterima'?'selected':''}>Status: Diterima</option><option value="Diproses" ${r.status==='Diproses'?'selected':''}>Status: Diproses</option><option value="Selesai" ${r.status==='Selesai'?'selected':''}>Status: Selesai</option></select>
+                            <a href="mailto:${r.email}?subject=Tindak Lanjut Laporan PTI&body=Yth. Pelapor,%0A%0A" class="text-xs text-blue-600 font-bold hover:underline flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg ml-auto"><i class="fa-solid fa-reply"></i> Balas</a>
+                            <button onclick="deleteItem_DB('reports','${r.id}')" class="text-xs text-red-500 font-bold hover:underline flex items-center gap-2 bg-red-50 px-3 py-2 rounded-lg"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        </div>
+                    </div>`).join(''):`<div class="text-center p-10 text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Belum ada laporan masuk.</div>`}</div>`;
+            } else {
+                const items = window.appData[s.adminTab] || [];
+                // Layout khusus Gallery di Admin
+                if(s.adminTab === 'gallery') {
+                    admContent = `<div class="flex justify-between items-center mb-8"><h3 class="font-bold capitalize text-2xl text-slate-800">Data Galeri Foto</h3><button onclick="openEditor('gallery')" class="bg-pti text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-pti/20 hover:bg-pti-dark transition transform hover:-translate-y-0.5">+ Tambah Foto</button></div><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">${items.map(i=>`<div class="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm group relative"><img src="${i.img}" class="w-full h-40 object-cover bg-slate-100"><div class="p-3"><p class="text-xs font-bold text-slate-700 truncate">${i.caption || 'Tanpa Keterangan'}</p></div><div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="deleteItem_DB('gallery','${i.id}')" class="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 shadow-sm"><i class="fa-solid fa-trash text-xs"></i></button></div></div>`).join('')}</div>`;
+                } else {
+                    admContent = `<div class="flex justify-between items-center mb-8"><h3 class="font-bold capitalize text-2xl text-slate-800">Data ${s.adminTab}</h3><button onclick="openEditor('${s.adminTab}')" class="bg-pti text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-pti/20 hover:bg-pti-dark transition transform hover:-translate-y-0.5">+ Tambah Baru</button></div><div class="space-y-4">${items.map(i=>`<div class="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm flex justify-between items-center hover:shadow-md transition duration-300 group"><div class="flex gap-5 items-center">${i.img?`<img src="${i.img}" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border">`:i.icon?`<div class="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center text-pti text-2xl"><i class="fa-solid ${i.icon}"></i></div>`:`<div class="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400"><i class="fa-solid fa-file"></i></div>`}<div><div class="font-bold text-base text-slate-800 group-hover:text-pti transition">${i.title||i.name}</div><div class="text-xs text-slate-500 mt-1 font-medium">${i.cat||i.role||i.desc?.substring(0,40)||''}</div></div></div><div class="flex gap-3"><button onclick='openEditor("${s.adminTab}",${JSON.stringify(i)})' class="w-10 h-10 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition"><i class="fa-solid fa-pen"></i></button><button onclick="deleteItem_DB('${s.adminTab}','${i.id}')" class="w-10 h-10 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition"><i class="fa-solid fa-trash"></i></button></div></div>`).join('')}</div>`;
+                }
+            }
+
+            app.innerHTML = `
+            <div class="flex h-screen bg-[#f8fafc] overflow-hidden font-sans">
+                <aside class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 text-white flex flex-col transition-transform md:relative md:translate-x-0 ${s.adminSidebar?'translate-x-0':'-translate-x-full'} shadow-2xl">
+                    <div class="p-8 h-24 flex items-center border-b border-slate-800 justify-between"><span class="font-bold text-xl tracking-wide text-white font-serif">CMS <span class="text-pti-gold">ADMIN</span></span><button onclick="window.state.adminSidebar=false;render()" class="md:hidden text-slate-400"><i class="fa-solid fa-xmark"></i></button></div>
+                    <div class="flex-1 p-6 overflow-y-auto space-y-2">
+                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 px-2">Halaman Depan</div>
+                        ${['hero','commander','features'].map(t=>`<button onclick="window.state.adminTab='${t}';window.state.adminSidebar=false;render()" class="w-full text-left px-5 py-3.5 rounded-xl font-semibold text-sm capitalize transition-all duration-300 ${s.adminTab===t?'bg-pti text-white shadow-glow scale-[1.02]':'text-slate-400 hover:bg-slate-800 hover:text-white'} flex items-center gap-3"><i class="fa-solid fa-circle text-[6px] ${s.adminTab===t?'opacity-100':'opacity-30'}"></i> ${t==='features'?'Layanan (Tusi)':t}</button>`).join('')}
+                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-6 mb-2 px-2">Data & Konten</div>
+                        ${['articles','members','regulations','gallery'].map(t=>`<button onclick="window.state.adminTab='${t}';window.state.adminSidebar=false;render()" class="w-full text-left px-5 py-3.5 rounded-xl font-semibold text-sm capitalize transition-all duration-300 ${s.adminTab===t?'bg-pti text-white shadow-glow scale-[1.02]':'text-slate-400 hover:bg-slate-800 hover:text-white'} flex items-center gap-3"><i class="fa-solid fa-circle text-[6px] ${s.adminTab===t?'opacity-100':'opacity-30'}"></i> ${t==='gallery'?'Galeri Foto':t}</button>`).join('')}
+                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-6 mb-2 px-2">Laporan Masyarakat</div>
+                        <button onclick="window.state.adminTab='reports';window.state.adminSidebar=false;render()" class="w-full text-left px-5 py-3.5 rounded-xl font-semibold text-sm capitalize transition-all duration-300 ${s.adminTab==='reports'?'bg-red-600 text-white shadow-glow scale-[1.02]':'text-slate-400 hover:bg-slate-800 hover:text-white'} flex items-center gap-3"><i class="fa-solid fa-inbox"></i> Laporan Masuk</button>
+                    </div>
+                    <div class="p-6 border-t border-slate-800"><button onclick="handleLogout()" class="w-full py-4 bg-red-600/90 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-lg flex items-center justify-center gap-2"><i class="fa-solid fa-power-off"></i> Keluar</button></div>
+                </aside>
+                <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fafc]">
+                    <header class="bg-white border-b border-slate-100 h-24 px-8 flex items-center gap-6 shadow-sm z-30 justify-between">
+                        <div class="flex items-center gap-4"><button onclick="window.state.adminSidebar=true;render()" class="md:hidden text-slate-600 text-2xl"><i class="fa-solid fa-bars"></i></button><h2 class="font-bold text-2xl capitalize text-slate-800 font-serif tracking-tight">${s.adminTab}</h2></div>
+                        <button onclick="navigate('home')" class="text-xs font-bold text-pti border-2 border-pti px-5 py-2.5 rounded-xl hover:bg-pti hover:text-white transition flex items-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Website</button>
+                    </header>
+                    <div class="flex-1 overflow-y-auto p-6 md:p-12 pb-32 bg-[#f8fafc]">${admContent}</div>
+                </main>
+            </div>`; return;
+        }
+
+        // PUBLIC CONTENT
+        let content = '';
+        if(s.loading) content = `<div class="pt-32 max-w-7xl mx-auto px-6 pb-20">${Skeleton}</div>`;
+        else if(s.page==='home') content=`
+            <!-- --- PERUBAHAN PADDING MOBILE (pt-40 md:pt-24) AGAR TIDAK TERTUTUP --- -->
+            <section class="relative min-h-[900px] flex items-center px-6 -mt-24 pt-40 md:pt-24 pb-48" style="background-image: url('${d.heroImage}'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent z-0"></div>
+                <div class="relative z-10 max-w-7xl mx-auto w-full text-white">
+                    <div class="max-w-3xl reveal active pl-2 md:pl-0">
+                        <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-yellow-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-8"><span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> Official Portal</div>
+                        <h1 class="text-5xl md:text-8xl font-bold font-serif leading-[1.1] mb-8 drop-shadow-2xl tracking-tight">${d.heroTitle}</h1>
+                        <p class="text-lg md:text-xl text-slate-200 mb-12 leading-relaxed max-w-xl font-light border-l-4 border-pti-gold pl-6">${d.heroDesc}</p>
+                        <div class="flex flex-wrap gap-5">
+                            <button onclick="navigate('lapor')" class="bg-pti-gold text-white px-10 py-5 rounded-2xl font-bold text-sm shadow-2xl shadow-orange-500/20 hover:bg-yellow-600 transition flex items-center gap-3 transform hover:-translate-y-1"><i class="fa-solid fa-file-pen text-lg"></i> Buat Laporan</button>
+                            <button onclick="navigate('tentang')" class="bg-white/10 text-white border border-white/30 px-10 py-5 rounded-2xl font-bold text-sm hover:bg-white/20 transition backdrop-blur-md transform hover:-translate-y-1 flex items-center gap-3">Profil Satuan <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="relative z-20 max-w-6xl mx-auto px-6 -mt-28 mb-40 reveal">
+                <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 p-10 grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100 border border-blue-100">
+                    ${(d.stats||[]).map(x=>`<div class="text-center py-6 group hover:bg-slate-50/50 transition rounded-2xl"><div class="text-5xl font-serif font-bold text-pti mb-2 counter drop-shadow-sm group-hover:scale-110 transition duration-500" data-target="${x.val.replace(/[^0-9]/g,'')}" data-suffix="${x.val.replace(/[0-9]/g,'')}">0</div><div class="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 group-hover:text-pti-gold transition">${x.label}</div></div>`).join('')}
+                </div>
+            </div>
+
+            <section class="max-w-7xl mx-auto px-6 mb-40 reveal">
+                <div class="bg-white rounded-[3.5rem] p-8 md:p-24 flex flex-col md:flex-row items-center gap-20 border border-blue-100 shadow-soft relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-50/50 rounded-full -mr-20 -mt-20 mix-blend-multiply filter blur-3xl opacity-70"></div>
+                    <div class="relative w-72 h-72 md:w-96 md:h-96 shrink-0 group perspective-1000">
+                        <div class="absolute inset-0 bg-pti rounded-[2.5rem] rotate-6 opacity-10 transition duration-700 group-hover:rotate-12 group-hover:scale-105"></div>
+                        <img src="${d.cmdImg}" class="relative w-full h-full object-cover rounded-[2.5rem] shadow-2xl rotate-[-3deg] transition duration-700 group-hover:rotate-0 group-hover:scale-105 border-[6px] border-white">
+                    </div>
+                    <div class="flex-1 text-center md:text-left relative z-10">
+                        <i class="fa-solid fa-quote-left text-5xl text-pti/10 mb-8 block animate-pulse"></i>
+                        <h2 class="text-3xl md:text-5xl font-serif font-bold text-slate-800 mb-8 leading-tight">Pimpinan Unit</h2>
+                        <blockquote class="text-xl md:text-2xl text-slate-600 leading-relaxed italic mb-10 font-serif">"${d.cmdQuote}"</blockquote>
+                        <div><h4 class="text-2xl font-bold text-pti">${d.cmdName}</h4><p class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">${d.cmdRole}</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- --- GALLERY SECTION (MASONRY) --- -->
+            <section class="max-w-7xl mx-auto px-6 mb-40 reveal">
+                <div class="text-center mb-16"><span class="text-pti-gold font-bold text-[11px] uppercase tracking-[0.3em] bg-orange-50 px-4 py-2 rounded-full">Dokumentasi Lapangan</span><h2 class="text-4xl md:text-5xl font-serif font-bold text-slate-900 mt-6 tracking-tight">Galeri Kegiatan</h2></div>
+                <div class="masonry-grid">
+                    ${(window.appData.gallery||[]).map(g=>`
+                    <div onclick="window.openLightbox('${g.img}', '${g.caption}')" class="masonry-item relative rounded-2xl overflow-hidden cursor-pointer group shadow-card">
+                        <img src="${g.img}" class="w-full h-auto object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-6">
+                            <div class="transform translate-y-4 group-hover:translate-y-0 transition duration-500">
+                                <p class="text-white font-serif italic text-lg">"${g.caption}"</p>
+                                <div class="w-10 h-1 bg-pti-gold mt-3 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>`).join('')}
+                </div>
+            </section>
+
+            <section class="max-w-7xl mx-auto px-6 mb-40 reveal">
+                <div class="text-center mb-20"><span class="text-pti-gold font-bold text-[11px] uppercase tracking-[0.3em] bg-orange-50 px-4 py-2 rounded-full">Kode Etik & Prinsip</span><h2 class="text-4xl md:text-5xl font-serif font-bold text-slate-900 mt-6 tracking-tight">Layanan & Fungsi Utama</h2></div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    ${(window.appData.features||[]).map(f=>`<div onclick="window.showFeatureDetail('${f.id}')" class="tusi-card bg-white p-12 rounded-[2.5rem] shadow-card border border-blue-100 cursor-pointer group relative overflow-hidden hover:-translate-y-2 transition-all duration-500"><div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100%] -mr-4 -mt-4 opacity-0 group-hover:opacity-100 transition duration-500"></div><div class="tusi-icon w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-pti text-2xl mb-8 shadow-sm group-hover:bg-pti group-hover:text-white transition duration-500 relative z-10"><i class="fa-solid ${f.icon}"></i></div><h3 class="text-2xl font-bold text-slate-800 mb-4 font-serif relative z-10">${f.title}</h3><p class="text-slate-500 text-sm leading-relaxed mb-10 line-clamp-3 relative z-10">${f.desc}</p><div class="absolute bottom-10 left-12 right-12 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-pti border-t border-slate-100 pt-5"><span class="group-hover:text-blue-600 transition">Lihat SOP</span><i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition"></i></div></div>`).join('')}
+                </div>
+            </section>
+
+            <section class="relative py-40 flex items-center justify-center text-center px-6 parallax-bg mb-40" style="background-image: url('${d.wbsImage}');">
+                <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-[2px]"></div>
+                <div class="relative z-10 max-w-3xl text-white reveal">
+                    <div class="w-20 h-20 mx-auto bg-white/10 rounded-full flex items-center justify-center text-3xl mb-8 backdrop-blur border border-white/20"><i class="fa-solid fa-user-secret"></i></div>
+                    <h2 class="text-4xl md:text-6xl font-serif font-bold mb-8 leading-tight">Whistleblowing System</h2>
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed font-light">Identitas pelapor dijamin kerahasiaannya. Bantu kami menjaga integritas korps Satpol PP dengan melaporkan pelanggaran.</p>
+                    <button onclick="navigate('lapor')" class="bg-white text-slate-900 px-12 py-5 rounded-full font-bold hover:scale-105 transition shadow-2xl hover:shadow-white/20 text-sm tracking-wide uppercase">Buat Laporan WBS</button>
+                </div>
+            </section>
+
+            <section class="max-w-7xl mx-auto px-6 mb-32 reveal">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6"><div><span class="text-pti font-bold text-[10px] uppercase tracking-[0.2em] mb-2 block">Dokumentasi</span><h2 class="text-4xl font-serif font-bold text-slate-800">Giat Terkini</h2></div><button onclick="navigate('berita')" class="text-sm font-bold text-pti border-b-2 border-pti pb-1 hover:text-blue-800 transition">Lihat Arsip Lengkap <i class="fa-solid fa-arrow-right ml-2"></i></button></div>
+                <div class="grid md:grid-cols-3 gap-10">${(window.appData.articles||[]).slice(0,3).map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] overflow-hidden shadow-card border border-blue-100 cursor-pointer group hover:-translate-y-2 transition-all duration-500"><div class="h-64 overflow-hidden bg-slate-100 relative"><img src="${a.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000"><div class="absolute top-5 left-5 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-pti shadow-lg">${a.cat||'Giat'}</div></div><div class="p-8"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-regular fa-clock"></i> ${a.date}</div><h3 class="text-xl font-bold text-slate-800 font-serif leading-snug mb-4 group-hover:text-pti transition">${a.title}</h3><div class="text-xs font-bold text-slate-300 group-hover:text-pti transition flex items-center gap-2">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></div></div></div>`).join('')}</div>
+            </section>`;
+
+        else if(s.page==='regulasi') {
+            const filtered = window.appData.regulations.filter(r => r.title.toLowerCase().includes(s.searchTerm) || r.cat.toLowerCase().includes(s.searchTerm));
+            content=`<div class="pt-40 max-w-4xl mx-auto px-6 pb-32"><div class="text-center mb-16"><h1 class="text-5xl font-serif font-bold mb-6 text-slate-800">Regulasi & SOP</h1><p class="text-xl text-slate-500 max-w-2xl mx-auto">Kumpulan dokumen dasar hukum dan standar operasional prosedur.</p></div><div class="relative mb-12"><input oninput="window.handleSearch(this.value)" placeholder="Cari Dokumen..." class="w-full border border-slate-200 p-5 pl-14 rounded-2xl shadow-sm outline-none focus:border-pti focus:ring-4 focus:ring-pti/5 transition text-lg"><i class="fa-solid fa-search absolute left-6 top-6 text-slate-400 text-xl"></i></div><div class="grid gap-5">${filtered.length?filtered.map(r=>`<div class="bg-white p-8 rounded-3xl shadow-soft border border-blue-100 flex items-center justify-between hover:border-pti/30 transition group hover:-translate-y-1 duration-300"><div class="flex items-center gap-8"><div class="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fa-solid fa-file-pdf"></i></div><div><h3 class="font-bold text-xl text-slate-800 group-hover:text-pti transition font-serif">${r.title}</h3><div class="text-xs text-slate-500 font-bold uppercase mt-2 tracking-wider bg-slate-50 inline-block px-2 py-1 rounded">${r.cat}</div></div></div><a href="${r.link}" target="_blank" class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-pti hover:text-white transition shadow-sm"><i class="fa-solid fa-download"></i></a></div>`).join(''):'<div class="text-center text-slate-400 py-20 bg-slate-50 rounded-3xl">Dokumen tidak ditemukan.</div>'}</div></div>`;
+        }
+        else if(s.page==='berita') content=`<div class="pt-40 max-w-7xl mx-auto px-6 pb-32"><h1 class="text-5xl font-serif font-bold mb-16 text-center text-slate-800">Arsip Berita</h1><div class="grid md:grid-cols-3 gap-10">${window.appData.articles.map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] shadow-card border border-blue-100 overflow-hidden cursor-pointer hover:scale-[1.02] transition duration-500"><img src="${a.img}" class="h-64 w-full object-cover bg-slate-100"><div class="p-8"><div class="text-xs font-bold text-pti mb-3 flex items-center gap-2"><i class="fa-regular fa-calendar"></i> ${a.date}</div><h3 class="font-bold text-slate-800 font-serif text-xl leading-snug">${a.title}</h3></div></div>`).join('')}</div></div>`;
+        
+        else if(s.page==='tentang') content=`<div class="pt-40 max-w-6xl mx-auto px-6 pb-32"><div class="text-center mb-20"><h1 class="text-6xl font-bold font-serif mb-8 text-slate-900">Profil Satuan</h1><p class="text-3xl text-slate-500 font-serif italic max-w-4xl mx-auto leading-relaxed border-y border-slate-100 py-10">"${window.appData.profile.visi}"</p></div><div class="grid md:grid-cols-2 gap-12 mb-32"><div class="bg-white p-12 rounded-[3rem] shadow-card border border-blue-100"><h3 class="text-2xl font-bold text-pti mb-8 flex items-center gap-4 font-serif"><i class="fa-solid fa-bullseye bg-blue-50 p-3 rounded-xl"></i> Misi Kami</h3><ul class="space-y-6">${(window.appData.profile.misi||[]).map(m=>`<li class="flex gap-5 text-slate-600 leading-relaxed text-lg"><i class="fa-solid fa-check text-white bg-green-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] mt-1 shadow-md"></i> <span>${m}</span></li>`).join('')}</ul></div><div class="bg-pti text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden"><div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div><h3 class="text-2xl font-bold mb-8 flex items-center gap-4 font-serif relative z-10"><i class="fa-solid fa-list-check bg-white/20 p-3 rounded-xl backdrop-blur-sm"></i> Tupoksi</h3><ul class="space-y-6 relative z-10">${(window.appData.profile.tupoksi||[]).map(m=>`<li class="flex gap-5 opacity-90 leading-relaxed text-lg"><i class="fa-solid fa-angle-right mt-1.5"></i> <span>${m}</span></li>`).join('')}</ul></div></div><h2 class="text-4xl font-bold text-center mb-16 font-serif text-slate-900">Personil Unit PTI</h2><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">${(window.appData.members||[]).map(m=>`<div class="bg-white p-8 rounded-[2.5rem] shadow-card border border-blue-100 text-center hover:-translate-y-3 transition duration-300 group"><div class="w-32 h-32 mx-auto mb-6 relative"><div class="absolute inset-0 bg-pti rounded-full opacity-10 group-hover:scale-110 transition duration-500"></div><img src="${m.img}" class="w-full h-full rounded-full object-cover border-4 border-white shadow-lg relative z-10"></div><h3 class="font-bold text-slate-800 text-xl font-serif mb-1">${m.name}</h3><p class="text-[10px] text-pti font-bold uppercase tracking-[0.2em]">${m.role}</p><div class="mt-4 text-[10px] text-slate-400 bg-slate-50 inline-block px-4 py-1.5 rounded-full font-mono border border-slate-100 group-hover:border-pti/30 transition">${m.nip}</div></div>`).join('')}</div></div>`;
+
+        else if(s.page==='lapor') content=`
+        <div class="pt-40 max-w-3xl mx-auto px-6 pb-40">
+            <div class="bg-white rounded-[3rem] shadow-2xl border border-blue-100 relative overflow-hidden">
+                <div class="flex text-center border-b border-slate-100">
+                    <button onclick="window.state.subPage='form'; render()" class="flex-1 py-6 font-bold text-sm uppercase tracking-widest transition ${s.subPage==='form'?'bg-white text-pti border-b-2 border-pti':'bg-slate-50 text-slate-400 hover:bg-slate-100'}">Formulir</button>
+                    <button onclick="window.state.subPage='track'; render()" class="flex-1 py-6 font-bold text-sm uppercase tracking-widest transition ${s.subPage==='track'?'bg-white text-pti border-b-2 border-pti':'bg-slate-50 text-slate-400 hover:bg-slate-100'}">Cek Status</button>
+                </div>
+                <div class="p-12 md:p-16">
+                    ${s.subPage==='form' ? `
+                        <div class="text-center mb-10">
+                            <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-pti text-2xl"><i class="fa-solid fa-file-signature"></i></div>
+                            <h1 class="text-4xl font-bold font-serif text-slate-800 mb-2">Buat Laporan</h1>
+                            <p class="text-slate-500">Kirim laporan pelanggaran dengan bukti.</p>
+                        </div>
+                        <form onsubmit="window.submitReport(event)">
+                            <div class="space-y-6">
+                                <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Terlapor</label><input id="rptName" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition font-medium" placeholder="Nama Personil..." required></div>
+                                <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Email Pelapor</label><input id="rptEmail" type="email" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition font-medium" placeholder="email@anda.com" required></div>
+                                <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Tanggal Kejadian</label><input id="rptDate" type="date" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition text-slate-600" required></div>
+                                <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Bukti Foto</label><div class="flex items-center gap-4 p-3 border border-blue-100 bg-slate-50 rounded-2xl"><label class="cursor-pointer bg-white border border-blue-200 text-pti px-5 py-3 rounded-xl font-bold text-sm hover:bg-blue-50 transition shadow-sm flex items-center gap-3"><i class="fa-solid fa-camera"></i> Upload<input type="file" class="hidden" accept="image/*" onchange="window.handleImageUpload(this.files[0], b=>{document.getElementById('rptEvidenceVal').value=b; document.getElementById('rptEvidencePrev').src=b; document.getElementById('rptEvidencePrev').classList.remove('hidden')})"></label><img id="rptEvidencePrev" class="h-12 w-12 object-cover rounded-lg hidden border border-slate-200 shadow-sm"><input type="hidden" id="rptEvidenceVal"></div></div>
+                                <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Kronologi</label><textarea id="rptDesc" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl h-40 outline-none focus:border-pti focus:bg-white transition font-medium resize-none" placeholder="Detail kejadian..." required></textarea></div>
+                                <button type="submit" class="w-full bg-pti text-white py-5 rounded-2xl font-bold shadow-xl hover:bg-pti-dark transition text-lg mt-4">Kirim Laporan</button>
+                            </div>
+                        </form>` 
+                    : `
+                        <div class="text-center mb-10">
+                            <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-purple-600 text-2xl"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <h1 class="text-4xl font-bold font-serif text-slate-800 mb-2">Lacak Laporan</h1>
+                            <p class="text-slate-500">Masukkan Kode Tiket Anda.</p>
+                        </div>
+                        <form onsubmit="window.checkTicket(event)" class="max-w-sm mx-auto mb-10">
+                            <input id="trackInput" class="w-full border-2 border-slate-200 p-4 rounded-2xl text-center font-mono text-xl uppercase tracking-widest mb-4 focus:border-pti outline-none" placeholder="TIK-XXXX" required>
+                            <button type="submit" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition">Cek Status</button>
+                        </form>
+                        <div id="trackResult"></div>`
+                    }
+                </div>
+            </div>
+            <div class="max-w-2xl mx-auto mt-16">
+                <h3 class="text-center font-bold text-slate-800 mb-8 font-serif text-2xl">Pertanyaan Umum (FAQ)</h3>
+                <div class="space-y-4">
+                    <details class="group bg-white rounded-2xl border border-blue-100 p-6 cursor-pointer open:shadow-lg transition"><summary class="font-bold text-slate-800 flex justify-between items-center">Apakah identitas saya aman? <i class="fa-solid fa-angle-down group-open:rotate-180 transition"></i></summary><p class="mt-4 text-slate-600 leading-relaxed">Ya, sistem WBS kami menjamin kerahasiaan identitas pelapor. Anda juga dapat menggunakan nama samaran jika diperlukan.</p></details>
+                    <details class="group bg-white rounded-2xl border border-blue-100 p-6 cursor-pointer open:shadow-lg transition"><summary class="font-bold text-slate-800 flex justify-between items-center">Berapa lama laporan diproses? <i class="fa-solid fa-angle-down group-open:rotate-180 transition"></i></summary><p class="mt-4 text-slate-600 leading-relaxed">Laporan akan diverifikasi dalam waktu 3x24 jam kerja. Proses investigasi lanjutan tergantung pada kompleksitas kasus.</p></details>
+                    <details class="group bg-white rounded-2xl border border-blue-100 p-6 cursor-pointer open:shadow-lg transition"><summary class="font-bold text-slate-800 flex justify-between items-center">Apa bukti yang harus dilampirkan? <i class="fa-solid fa-angle-down group-open:rotate-180 transition"></i></summary><p class="mt-4 text-slate-600 leading-relaxed">Foto, video, atau dokumen yang mendukung laporan Anda akan sangat membantu mempercepat proses penindakan.</p></details>
+                </div>
+            </div>
+        </div>`;
+
+        const Footer = `<footer class="bg-slate-900 text-slate-300 py-20 border-t border-slate-800 mt-auto"><div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12"><div class="md:col-span-2"><div class="flex items-center gap-4 mb-8 text-white"><div class="w-12 h-12 bg-pti rounded-xl flex items-center justify-center shadow-glow"><img src="https://iili.io/Kyomv4I.png" class="w-8 h-8 object-contain drop-shadow-sm"></div><div><h2 class="text-xl font-serif font-bold leading-none">PTI <span class="text-pti-gold">ANAMBAS</span></h2><p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-2">Satpol PP Kab. Kepulauan Anambas</p></div></div><p class="text-base mb-8 leading-relaxed text-slate-400 max-w-md font-light">Unit Petugas Tindak Internal (PTI) Satpol PP Kabupaten Kepulauan Anambas. Garda terdepan dalam pengawasan kode etik, disiplin, dan integritas personil demi pelayanan yang prima kepada masyarakat.</p></div><div><h3 class="font-bold text-white mb-8 text-xs uppercase tracking-[0.2em] border-b border-slate-800 pb-4 inline-block">Kontak Resmi</h3><ul class="space-y-5 text-sm text-slate-400"><li><i class="fa-solid fa-map-pin text-pti mr-4 text-lg"></i> ${d.address}</li><li><i class="fa-solid fa-phone text-pti mr-4 text-lg"></i> ${d.phone}</li><li><i class="fa-solid fa-envelope text-pti mr-4 text-lg"></i> ${d.email}</li></ul></div><div><h3 class="font-bold text-white mb-8 text-xs uppercase tracking-[0.2em] border-b border-slate-800 pb-4 inline-block">Navigasi</h3><ul class="space-y-4 text-sm text-slate-400"><li><button onclick="navigate('lapor')" class="hover:text-white transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-pti"></i> Lapor Pelanggaran</button></li><li><button onclick="navigate('berita')" class="hover:text-white transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-pti"></i> Berita & Giat</button></li><li><button onclick="navigate('regulasi')" class="hover:text-white transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-pti"></i> Regulasi & SOP</button></li></ul></div></div><div class="text-center text-xs text-slate-600 mt-20 pt-8 border-t border-slate-800 tracking-widest">&copy; 2025 PTI Satpol PP Anambas. All Rights Reserved.</div></footer>`;
+
+        app.innerHTML = Navbar + `<main class="flex-grow">${content}</main>` + Footer;
+    }
+
+    init();
+  </script>
+ </body>
+</html>
+
+
