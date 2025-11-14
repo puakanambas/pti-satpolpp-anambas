@@ -112,38 +112,18 @@
         border: 1px solid #e2e8f0;
     }
     
-    /* Organization Chart Structure */
-    .org-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow-x: auto;
-        padding: 3rem 1rem;
-    }
-    .org-tier {
-        display: flex;
-        flex-wrap: wrap; /* Membolehkan wrapping di layar kecil */
-        justify-content: center;
-        gap: 2rem;
-        position: relative;
-        padding-top: 4rem; /* Memberi ruang untuk garis konektor */
-    }
-    .org-tier.single {
-        padding-top: 0; /* Tier pertama tidak perlu padding atas */
-    }
-    .org-card {
+    /* --- STYLES STRUKTUR ORGANISASI BARU --- */
+    .org-card-leader {
         background-color: white;
-        padding: 1.5rem;
+        padding: 2rem;
         border-radius: 1.5rem;
         box-shadow: 0 10px 30px -5px rgba(0,0,0,0.06);
         border: 1px solid #e0f2fe;
         text-align: center;
-        width: 280px;
-        min-width: 260px;
-        flex-shrink: 0;
-        position: relative;
+        width: 300px;
+        min-width: 280px;
     }
-    .org-card img {
+    .org-card-leader img {
         width: 6rem;
         height: 6rem;
         border-radius: 50%;
@@ -152,54 +132,38 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         margin-left: auto;
         margin-right: auto;
-        margin-top: -4.5rem; /* Menarik gambar ke atas kartu */
-        position: relative;
-        z-index: 10;
+        margin-bottom: 1rem;
     }
-    .line-down {
-        width: 2px;
+    .org-card-member {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.04);
+        border: 1px solid #f1f5f9;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .org-card-member:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px -5px rgba(0,0,0,0.08);
+        border-color: #e0f2fe;
+    }
+    .org-card-member img {
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1rem;
+    }
+    .org-line {
+        width: 3px;
         height: 3rem;
-        background-color: #cbd5e1;
+        background-color: #e0f2fe; /* Warna biru muda */
+        border-radius: 3px;
     }
-    /* Garis konektor vertikal untuk setiap kartu */
-    .org-card::before {
-        content: '';
-        position: absolute;
-        top: -2rem; /* (tinggi .line-down - 1rem) */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: 2rem;
-        background-color: #cbd5e1;
-    }
-    /* Garis konektor horizontal (hanya untuk tier > 1) */
-    .org-tier::before {
-        content: '';
-        position: absolute;
-        top: -2rem; /* Sejajar dengan atas garis vertikal kartu */
-        left: 50%;
-        right: 50%;
-        height: 2px;
-        background-color: #cbd5e1;
-        /* Lebar akan di-set oleh JS/inline style jika > 2 card, tapi kita bisa default */
-    }
-    /* Logika untuk garis horizontal jika ada > 1 kartu */
-    .org-tier:not(.single)::before {
-        left: calc(50% - 140px); /* 140px = setengah lebar kartu */
-        right: calc(50% - 140px);
-    }
-    /* Sembunyikan garis untuk tier pertama */
-    .org-tier.single .org-card::before, .org-tier.single::before { display: none; }
-    /* Penyesuaian garis untuk kartu pertama dan terakhir di tier */
-    .org-tier:not(.single) .org-card:first-child::before {
-        left: 50%;
-        right: -1rem; /* Lebar gap / 2 */
-    }
-    .org-tier:not(.single) .org-card:last-child::before {
-        right: 50%;
-        left: -1rem; /* Lebar gap / 2 */
-    }
-    
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -275,6 +239,14 @@
                 <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Kode Tiket (Klik untuk Salin)</span>
                 <div id="ticketCodeDisp" class="text-4xl font-mono font-bold text-pti tracking-wider">---</div>
             </div>
+            
+            <!-- Tombol WA (Awalnya Tersembunyi) -->
+            <div id="waButtonContainer" class="mb-4 hidden">
+                <button id="waSendButton" class="w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-lg shadow-green-500/20 flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> Kirim Kode Tiket ke WA
+                </button>
+            </div>
+            
             <button onclick="document.getElementById('ticketModal').close(); window.navigate('home')" class="w-full py-4 bg-pti text-white rounded-xl font-bold hover:bg-pti-dark transition shadow-lg">Saya Mengerti</button>
         </div>
     </div>
@@ -333,8 +305,7 @@
             wbsImage: "https://images.unsplash.com/photo-1554224155-8d04f1800b8e?q=80&w=2400",
             address: "Jl. Imam Bonjol, Tarempa, Siantan", phone: "(0772) 312345", email: "pti@anambaskab.go.id",
             cmdName: "Dino Manarso, S.IP", cmdRole: "KOMANDAN PTI", cmdQuote: "Disiplin bukan hanya tentang aturan, tapi tentang harga diri.",
-            cmdImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400",
-            stats: [ {val:"150+", label:"Personil Diawasi"}, {val:"48", label:"Giat Penertiban"}, {val:"98%", label:"Kepatuhan SOP"} ]
+            cmdImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400"
         },
         profile: { visi: "Terwujudnya Satpol PP Profesional.", misi: ["Meningkatkan disiplin."], tupoksi: ["Pengawasan"] },
         articles: [], members: [], regulations: [], features: [], reports: [], gallery: []
@@ -435,10 +406,35 @@
             entries.forEach(entry => { if(entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } });
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        
+        // Pindahkan logika counter ke sini agar bisa dipanggil ulang
         const counters = document.querySelectorAll('.counter');
         const obsCounter = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if(entry.isIntersecting) { const el=entry.target; const target=parseInt(el.getAttribute('data-target')); let count=0; const inc=target/40; const update=()=>{ count+=inc; if(count<target){ el.innerText=Math.ceil(count)+(el.innerText.includes('+')?'+':'')+(el.innerText.includes('%')?'%':''); requestAnimationFrame(update); }else{ el.innerText=target+(el.getAttribute('data-suffix')||''); } }; update(); obsCounter.unobserve(el); } });
-        });
+            entries.forEach(entry => { 
+                if(entry.isIntersecting) { 
+                    const el = entry.target; 
+                    const target = parseInt(el.getAttribute('data-target')); 
+                    if (isNaN(target)) return; // Guard clause jika data-target belum siap
+                    
+                    let count = 0; 
+                    const inc = Math.max(target / 50, 1); // Buat animasi lebih cepat/lambat
+                    
+                    const update = () => { 
+                        count += inc; 
+                        if (count < target) { 
+                            el.innerText = Math.ceil(count) + (el.getAttribute('data-suffix') || ''); 
+                            requestAnimationFrame(update); 
+                        } else { 
+                            el.innerText = target + (el.getAttribute('data-suffix') || ''); 
+                        } 
+                    }; 
+                    
+                    update(); 
+                    obsCounter.unobserve(el); 
+                } 
+            });
+        }, { threshold: 0.5 }); // Trigger saat 50% terlihat
+        
         counters.forEach(c => obsCounter.observe(c));
     }
 
@@ -465,7 +461,7 @@
 
         window.scrollTo(0,0); 
         render(); 
-        setTimeout(initScrollReveal, 100);
+        setTimeout(initScrollReveal, 100); // Panggil ulang initScrollReveal setelah render
     }
     
     window.onpopstate = (event) => {
@@ -538,7 +534,33 @@
             } else {
                 const d = snap.docs[0].data();
                 const statusColor = d.status === 'Selesai' ? 'text-green-500 bg-green-50' : (d.status === 'Diproses' ? 'text-blue-500 bg-blue-50' : 'text-yellow-500 bg-yellow-50');
-                resDiv.innerHTML = `<div class="bg-white p-6 rounded-2xl border border-blue-100 shadow-lg"><div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-50"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Status Laporan</span><span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${statusColor}">${d.status || 'Diterima'}</span></div><div class="space-y-3"><div class="flex justify-between"><span class="text-sm text-slate-500">Tiket</span><span class="text-sm font-mono font-bold">${d.ticketId}</span></div><div class="flex justify-between"><span class="text-sm text-slate-500">Tanggal</span><span class="text-sm font-bold">${d.tanggal}</span></div><div class="flex justify-between"><span class="text-sm text-slate-500">Terlapor</span><span class="text-sm font-bold">${d.terlapor}</span></div></div><div class="mt-6 pt-4 border-t border-slate-50 text-center"><p class="text-xs text-slate-400">Terima kasih telah berpartisipasi menjaga integritas.</p></div></div>`;
+                resDiv.innerHTML = `<div class="bg-white p-6 rounded-2xl border border-blue-100 shadow-lg">
+                    <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-50">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Status Laporan</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${statusColor}">${d.status || 'Diterima'}</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between"><span class="text-sm text-slate-500">Tiket</span><span class="text-sm font-mono font-bold">${d.ticketId}</span></div>
+                        <div class="flex justify-between"><span class="text-sm text-slate-500">Tanggal</span><span class="text-sm font-bold">${d.tanggal}</span></div>
+                        <div class="flex justify-between"><span class="text-sm text-slate-500">Terlapor</span><span class="text-sm font-bold">${d.terlapor}</span></div>
+                    </div>
+                    
+                    <!-- KODE BARU: Menampilkan Tindak Lanjut -->
+                    ${(d.status === 'Selesai' && d.tindakLanjut) ? `
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-3">Informasi Tindak Lanjut</span>
+                        <p class="text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed">${d.tindakLanjut}</p>
+                    </div>
+                    ` : (d.status === 'Selesai' ? `
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-3">Informasi Tindak Lanjut</span>
+                        <p class="text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed">Laporan telah selesai diproses. Belum ada catatan tindak lanjut publik yang ditambahkan.</p>
+                    </div>
+                    ` : '')}
+                    <!-- AKHIR KODE BARU -->
+
+                    <div class="mt-6 pt-4 border-t border-slate-50 text-center"><p class="text-xs text-slate-400">Terima kasih telah berpartisipasi menjaga integritas.</p></div>
+                </div>`;
             }
         } catch(err) { console.error(err); showToast("Gagal mengecek", true); }
     }
@@ -547,26 +569,83 @@
         e.preventDefault();
         const ticketId = 'TIK-' + Math.floor(1000 + Math.random() * 9000);
         try {
-            await addDoc(collection(db, "reports"), { 
+            // Data untuk disimpan ke Firestore
+            const reportData = { 
                 ticketId: ticketId,
                 status: 'Diterima',
                 terlapor: document.getElementById('rptName').value, 
                 email: document.getElementById('rptEmail').value, 
+                wa: document.getElementById('rptWA').value, // <-- SIMPAN NOMOR WA
                 tanggal: document.getElementById('rptDate').value, 
                 kronologi: document.getElementById('rptDesc').value, 
                 bukti: document.getElementById('rptEvidenceVal').value, 
-                waktu: new Date().toISOString() 
-            });
+                waktu: new Date().toISOString(),
+                tindakLanjut: "" // KODE BARU: Tambah field kosong
+            };
+            
+            await addDoc(collection(db, "reports"), reportData);
+            
+            // Logika Tombol WA
+            const waNumber = reportData.wa; // Ambil dari data yang akan disimpan
+            const waBtnContainer = document.getElementById('waButtonContainer');
+            const waBtn = document.getElementById('waSendButton');
+
+            if (waNumber && waNumber.length > 8) { // Cek jika WA diisi
+                let formattedWA = waNumber.replace(/[\s-+()]/g, ''); // Hapus spasi, -, +, (), .
+                if (formattedWA.startsWith('0')) {
+                    formattedWA = '62' + formattedWA.substring(1); // Ganti 08... -> 628...
+                } else if (!formattedWA.startsWith('62')) {
+                    formattedWA = '62' + formattedWA; // Asumsi angka lokal
+                }
+                
+                const message = `Terima kasih atas partisipasi Anda dalam menjaga integritas Satpol PP Anambas.\n\nLaporan Anda telah kami terima. Harap simpan Kode Tiket ini untuk pengecekan status di website:\n\n*${ticketId}*`;
+                const encodedMessage = encodeURIComponent(message);
+                
+                waBtn.onclick = () => {
+                    window.open(`https://wa.me/${formattedWA}?text=${encodedMessage}`, '_blank');
+                };
+                waBtnContainer.classList.remove('hidden');
+            } else {
+                waBtnContainer.classList.add('hidden'); // Sembunyikan jika tidak ada nomor WA
+            }
+            
+            // Tampilkan modal
             document.getElementById('ticketCodeDisp').innerText = ticketId;
             document.getElementById('ticketModal').showModal();
             e.target.reset();
             document.getElementById('rptEvidencePrev').classList.add('hidden');
             await loadData();
-        } catch(err) { showToast("Gagal Mengirim Laporan", true); }
+            
+        } catch(err) { 
+            console.error(err);
+            showToast("Gagal Mengirim Laporan", true); 
+        }
     }
 
-    window.updateReportStatus = async (id, newStatus) => {
-        try { await updateDoc(doc(db, "reports", id), { status: newStatus }); showToast("Status Diperbarui"); await loadData(); } catch(e){ showToast("Gagal Update", true); }
+
+    // KODE DIPERBARUI: Fungsi ini sekarang mengupdate status DAN catatan tindak lanjut
+    window.updateReport = async (id) => {
+        const newStatus = document.getElementById(`status_${id}`).value;
+        const newNote = document.getElementById(`note_${id}`).value;
+        try { 
+            await updateDoc(doc(db, "reports", id), { 
+                status: newStatus, 
+                tindakLanjut: newNote 
+            }); 
+            showToast("Laporan Diperbarui"); 
+            
+            // Reload data di state lokal agar UI admin update
+            const reportIndex = window.appData.reports.findIndex(r => r.id === id);
+            if (reportIndex > -1) {
+                window.appData.reports[reportIndex].status = newStatus;
+                window.appData.reports[reportIndex].tindakLanjut = newNote;
+            }
+            render(); // Render ulang admin panel
+            
+        } catch(e){ 
+            console.error(e);
+            showToast("Gagal Update", true); 
+        }
     }
 
     window.viewArticle = (id) => { const a = window.appData.articles.find(x=>x.id===id); if(!a)return; const h=`<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onclick="this.remove()"><div class="bg-white w-full max-w-2xl max-h-[90vh] rounded-2xl overflow-hidden relative flex flex-col shadow-2xl border border-white/20" onclick="event.stopPropagation()"><button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition backdrop-blur-md"><i class="fa-solid fa-xmark"></i></button><div class="h-72 shrink-0 bg-slate-100"><img src="${a.img}" class="w-full h-full object-cover"></div><div class="p-8 overflow-y-auto"><span class="text-pti font-bold text-[10px] uppercase tracking-widest mb-2 block text-slate-400">${a.date} &bull; ${a.cat||'Berita'}</span><h2 class="text-3xl font-bold font-serif mb-6 text-slate-800 leading-tight">${a.title}</h2><p class="text-slate-600 leading-relaxed whitespace-pre-line text-lg">${a.content}</p></div></div></div>`; document.body.insertAdjacentHTML('beforeend', h); }
@@ -659,21 +738,70 @@
             else if(s.adminTab==='commander') admContent = `<div class="bg-white p-8 md:p-10 rounded-3xl border border-blue-100 shadow-sm">${Input('Nama Lengkap','cmdName',d.cmdName)}${Input('Jabatan','cmdRole',d.cmdRole)}${Input('Kutipan Motivasi','cmdQuote',d.cmdQuote)}${ImgInput('Foto Profil','cmdImg',d.cmdImg)}</div>`;
             else if(s.adminTab==='reports') {
                 const rpts = window.appData.reports || [];
-                admContent = `<div class="mb-8"><h3 class="font-bold capitalize text-2xl text-slate-800">Laporan Masuk (${rpts.length})</h3></div><div class="space-y-4">${rpts.length?rpts.map(r=>`
+                admContent = `<div class="mb-8"><h3 class="font-bold capitalize text-2xl text-slate-800">Laporan Masuk (${rpts.length})</h3></div><div class="space-y-4">
+                ${rpts.length?rpts.map(r=> {
+                    
+                    // Logika Tombol Balas WA untuk Admin
+                    let waLink = '';
+                    if (r.wa) {
+                        let formattedWA = r.wa.replace(/[\s-+()]/g, '');
+                        if (formattedWA.startsWith('0')) formattedWA = '62' + formattedWA.substring(1);
+                        else if (!formattedWA.startsWith('62')) formattedWA = '62' + formattedWA;
+                        
+                        // Pesan Template untuk Admin
+                        const adminMsg = `Yth. Pelapor,\n\nMenanggapi laporan Anda (Tiket: *${r.ticketId}*) mengenai *${r.terlapor}*, kami sampaikan bahwa:\n\n[...silakan isi status/perkembangan...]`;
+                        const encodedAdminMsg = encodeURIComponent(adminMsg);
+                        waLink = `https://wa.me/${formattedWA}?text=${encodedAdminMsg}`;
+                    }
+                    
+                    return `
                     <div class="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-2">
                             <div class="flex items-center gap-3"><span class="font-bold text-slate-800 text-lg">${r.terlapor}</span><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${r.status==='Selesai'?'bg-green-100 text-green-600':r.status==='Diproses'?'bg-blue-100 text-blue-600':'bg-yellow-100 text-yellow-600'}">${r.status||'Diterima'}</span></div>
                             <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">#${r.ticketId||'---'}</span>
                         </div>
-                        <div class="text-xs text-pti font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-envelope"></i> ${r.email || 'Tidak ada email'}</div>
+                        
+                        <!-- Info Kontak Pelapor (Email & WA) -->
+                        <div class="text-xs text-pti font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-envelope"></i> ${r.email || 'Tidak ada email'}</div>
+                        ${r.wa ? `<div class="text-xs text-green-600 font-bold mb-4 flex items-center gap-2"><i class="fa-brands fa-whatsapp"></i> ${r.wa}</div>` : ''}
+
                         <p class="text-sm text-slate-600 mb-5 bg-slate-50 p-4 rounded-xl leading-relaxed border border-slate-100">${r.kronologi}</p>
                         ${r.bukti ? `<div class="mb-5 bg-blue-50 p-3 rounded-xl border border-blue-100 inline-block"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Bukti Lampiran:</span><img src="${r.bukti}" class="h-32 rounded-lg cursor-pointer hover:scale-105 transition shadow-sm border border-white" onclick="window.open(this.src)"></div>` : ''}
-                        <div class="flex flex-wrap gap-3 border-t border-slate-100 pt-4 items-center">
-                            <select onchange="window.updateReportStatus('${r.id}', this.value)" class="border border-slate-200 rounded-lg text-xs p-2 font-bold outline-none"><option value="Diterima" ${r.status==='Diterima'?'selected':''}>Status: Diterima</option><option value="Diproses" ${r.status==='Diproses'?'selected':''}>Status: Diproses</option><option value="Selesai" ${r.status==='Selesai'?'selected':''}>Status: Selesai</option></select>
-                            <a href="mailto:${r.email}?subject=Tindak Lanjut Laporan PTI&body=Yth. Pelapor,%0A%0A" class="text-xs text-blue-600 font-bold hover:underline flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg ml-auto"><i class="fa-solid fa-reply"></i> Balas</a>
-                            <button onclick="deleteItem_DB('reports','${r.id}')" class="text-xs text-red-500 font-bold hover:underline flex items-center gap-2 bg-red-50 px-3 py-2 rounded-lg"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        
+                        <!-- KODE DIPERBARUI: Area Tindak Lanjut -->
+                        <div class="mt-2 mb-5">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-1">Catatan Tindak Lanjut (Publik)</label>
+                            <textarea id="note_${r.id}" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-xl outline-none focus:border-pti transition font-medium" placeholder="Mis: Tidak terbukti, Diberi sanksi ringan, dll...">${r.tindakLanjut || ''}</textarea>
                         </div>
-                    </div>`).join(''):`<div class="text-center p-10 text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Belum ada laporan masuk.</div>`}</div>`;
+                        
+                        <!-- KODE DIPERBARUI: Tombol Aksi Admin -->
+                        <div class="flex flex-wrap gap-3 border-t border-slate-100 pt-4 items-center">
+                            
+                            <!-- Dropdown Status (onchange dihapus, id ditambah) -->
+                            <select id="status_${r.id}" class="border border-slate-200 rounded-lg text-xs p-2 font-bold outline-none">
+                                <option value="Diterima" ${r.status==='Diterima'?'selected':''}>Status: Diterima</option>
+                                <option value="Diproses" ${r.status==='Diproses'?'selected':''}>Status: Diproses</option>
+                                <option value="Selesai" ${r.status==='Selesai'?'selected':''}>Status: Selesai</option>
+                            </select>
+                            
+                            <!-- Tombol Update Baru -->
+                            <button onclick="window.updateReport('${r.id}')" class="text-xs text-white font-bold bg-pti px-4 py-2 rounded-lg hover:bg-pti-dark transition shadow-sm">
+                                <i class="fa-solid fa-save mr-1"></i> Update
+                            </button>
+                            
+                            <div class="flex gap-2 ml-auto">
+                                <!-- Tombol Balas WA (Hanya muncul jika ada r.wa) -->
+                                ${waLink ? `<a href="${waLink}" target="_blank" class="text-xs text-green-600 font-bold hover:underline flex items-center gap-2 bg-green-50 px-3 py-2 rounded-lg"><i class="fa-brands fa-whatsapp"></i> Balas WA</a>` : ''}
+                                
+                                <!-- Tombol Balas Email -->
+                                <a href="mailto:${r.email}?subject=Tindak Lanjut Laporan PTI (Tiket: ${r.ticketId})&body=Yth. Pelapor,%0A%0AMenanggapi laporan Anda (Tiket: ${r.ticketId}) mengenai ${r.terlapor}, kami sampaikan bahwa:%0A%0A[...silakan isi status/perkembangan...]" class="text-xs text-blue-600 font-bold hover:underline flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg"><i class="fa-solid fa-reply"></i> Balas</a>
+                                
+                                <!-- Tombol Hapus -->
+                                <button onclick="deleteItem_DB('reports','${r.id}')" class="text-xs text-red-500 font-bold hover:underline flex items-center gap-2 bg-red-50 px-3 py-2 rounded-lg"><i class="fa-solid fa-trash"></i> Hapus</button>
+                            </div>
+                        </div>
+                    </div>`
+                }).join(''):`<div class="text-center p-10 text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Belum ada laporan masuk.</div>`}</div>`;
             } else {
                 const items = window.appData[s.adminTab] || [];
                 if(s.adminTab === 'gallery') {
@@ -711,6 +839,24 @@
         let content = '';
         if(s.loading) content = `<div class="pt-32 max-w-7xl mx-auto px-6 pb-20">${Skeleton}</div>`;
         else if(s.page==='home') {
+            
+            // --- KODE BARU: Kalkulasi Statistik WBS ---
+            const allReports = window.appData.reports || [];
+            const totalLaporan = allReports.length;
+            const laporanDiproses = allReports.filter(r => r.status === 'Diproses').length;
+            const laporanSelesai = allReports.filter(r => r.status === 'Selesai').length;
+            
+            // Definisikan data statistik baru DENGAN WARNA
+            const wbsStats = [
+                { val: totalLaporan, label: "Total Laporan Diterima", icon: "fa-inbox",
+                  iconBg: "bg-pti-light", iconColor: "text-pti", textColor: "text-pti" },
+                { val: laporanDiproses, label: "Laporan Sedang Diproses", icon: "fa-hourglass-half",
+                  iconBg: "bg-amber-50", iconColor: "text-amber-500", textColor: "text-amber-600" },
+                { val: laporanSelesai, label: "Laporan Tuntas", icon: "fa-circle-check",
+                  iconBg: "bg-green-50", iconColor: "text-green-500", textColor: "text-green-600" }
+            ];
+            // --- AKHIR KODE BARU ---
+
             const limitedGallery = (window.appData.gallery || []).slice(0, 6);
             const limitedNews = (window.appData.articles || []).slice(0, 3);
             content=`
@@ -729,11 +875,23 @@
                 </div>
             </section>
             
+            <!-- === STATISTIK WBS (DESAIN BARU DENGAN WARNA) === -->
             <div class="relative z-20 max-w-6xl mx-auto px-6 -mt-28 mb-40 reveal">
-                <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 p-10 grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100 border border-blue-100">
-                    ${(d.stats||[]).map(x=>`<div class="text-center py-6 group hover:bg-slate-50/50 transition rounded-2xl"><div class="text-5xl font-serif font-bold text-pti mb-2 counter drop-shadow-sm group-hover:scale-110 transition duration-500" data-target="${x.val.replace(/[^0-9]/g,'')}" data-suffix="${x.val.replace(/[0-9]/g,'')}">0</div><div class="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 group-hover:text-pti-gold transition">${x.label}</div></div>`).join('')}
+                <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/60 p-10 grid md:grid-cols-3 gap-10 border border-blue-50">
+                    ${wbsStats.map(stat => `
+                    <div class="flex items-center gap-6 p-4 rounded-2xl group transition duration-300 hover:bg-slate-50/70">
+                        <div class="w-20 h-20 ${stat.iconBg} rounded-3xl flex items-center justify-center ${stat.iconColor} text-4xl shrink-0 shadow-sm border border-blue-100 group-hover:scale-105 group-hover:shadow-md transition-all duration-400">
+                            <i class="fa-solid ${stat.icon}"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-5xl font-serif font-bold ${stat.textColor} mb-1 counter" data-target="${stat.val}" data-suffix="">0</div>
+                            <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 group-hover:text-pti-gold transition">${stat.label}</div>
+                        </div>
+                    </div>
+                    `).join('')}
                 </div>
             </div>
+            <!-- === AKHIR STATISTIK WBS === -->
 
             <section class="max-w-7xl mx-auto px-6 mb-40 reveal">
                 <div class="bg-white rounded-[3.5rem] p-8 md:p-24 flex flex-col md:flex-row items-center gap-20 border border-blue-100 shadow-soft relative overflow-hidden">
@@ -898,10 +1056,10 @@
         
         else if(s.page==='tentang') {
             // Helper function untuk membuat kartu anggota
-            const MemberCard = (name) => {
-                const m = window.findMember(name); // Gunakan helper yang sudah ada
+            const LeaderCard = (name) => {
+                const m = window.findMember(name);
                 return `
-                <div class="org-card">
+                <div class="org-card-leader ${m.role.toLowerCase().includes('komandan') ? 'bg-pti-light' : ''}">
                     <img src="${m.img}" alt="${m.name}">
                     <h3 class="font-bold text-slate-800 text-xl font-serif mt-4 mb-1">${m.name}</h3>
                     <p class="text-[10px] text-pti font-bold uppercase tracking-[0.2em]">${m.role}</p>
@@ -909,33 +1067,14 @@
                 </div>`;
             };
             
-            // Helper untuk membuat satu baris/tier
-            const ConnectTier = (names) => {
-                // Tentukan style untuk garis horizontal berdasarkan jumlah kartu
-                let lineStyle = 'width: 0;';
-                if (names.length > 1) {
-                    const cardWidth = 280; // Lebar kartu
-                    const gap = 32; // Gap antar kartu (2rem)
-                    const totalWidth = (names.length * cardWidth) + ((names.length - 1) * gap);
-                    // Lebar garis adalah dari tengah kartu pertama ke tengah kartu terakhir
-                    const lineWidth = totalWidth - cardWidth;
-                    lineStyle = `width: ${lineWidth}px; max-width: 90%;`;
-                }
-                
+            const MemberCard = (name) => {
+                const m = window.findMember(name);
                 return `
-                <div class="org-tier ${names.length === 1 ? 'single' : ''}" style="${names.length > 1 ? 'position: relative;' : ''}">
-                    <!-- Garis Konektor Horizontal (HANYA JIKA > 1) -->
-                    ${names.length > 1 ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 bg-slate-200" style="${lineStyle}"></div>` : ''}
-                    
-                    <!-- Garis Konektor Vertikal (tengah) -->
-                    ${names.length > 1 ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>` : ''}
-
-                    ${names.map(name => `
-                    <div class="relative pt-16">
-                        <!-- Garis konektor vertikal untuk setiap kartu -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
-                        ${MemberCard(name)}
-                    </div>`).join('')}
+                <div class="org-card-member">
+                    <img src="${m.img}" alt="${m.name}">
+                    <h3 class="font-bold text-slate-800 text-lg font-serif mt-4 mb-1">${m.name}</h3>
+                    <p class="text-[10px] text-pti font-bold uppercase tracking-[0.2em]">${m.role}</p>
+                    <div class="mt-3 text-[10px] text-slate-400 bg-slate-50 inline-block px-3 py-1 rounded-full font-mono border border-slate-100">${m.nip}</div>
                 </div>`;
             };
             
@@ -944,33 +1083,27 @@
                 <div class="text-center mb-20 max-w-6xl mx-auto"><h1 class="text-6xl font-bold font-serif mb-8 text-slate-900">Profil Satuan</h1><p class="text-3xl text-slate-500 font-serif italic max-w-4xl mx-auto leading-relaxed border-y border-slate-100 py-10">"${window.appData.profile.visi}"</p></div>
                 <div class="grid md:grid-cols-2 gap-12 mb-32 max-w-6xl mx-auto"><div class="bg-white p-12 rounded-[3rem] shadow-card border border-blue-100"><h3 class="text-2xl font-bold text-pti mb-8 flex items-center gap-4 font-serif"><i class="fa-solid fa-bullseye bg-blue-50 p-3 rounded-xl"></i> Misi Kami</h3><ul class="space-y-6">${(window.appData.profile.misi||[]).map(m=>`<li class="flex gap-5 text-slate-600 leading-relaxed text-lg"><i class="fa-solid fa-check text-white bg-green-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] mt-1 shadow-md"></i> <span>${m}</span></li>`).join('')}</ul></div><div class="bg-pti text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden"><div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div><h3 class="text-2xl font-bold mb-8 flex items-center gap-4 font-serif relative z-10"><i class="fa-solid fa-list-check bg-white/20 p-3 rounded-xl backdrop-blur-sm"></i> Tupoksi</h3><ul class="space-y-6 relative z-10">${(window.appData.profile.tupoksi||[]).map(m=>`<li class="flex gap-5 opacity-90 leading-relaxed text-lg"><i class="fa-solid fa-angle-right mt-1.5"></i> <span>${m}</span></li>`).join('')}</ul></div></div>
                 
-                <!-- STRUKTUR ORGANISASI (Tiered Layout) -->
-                <h2 class="text-4xl font-bold text-center mb-16 font-serif text-slate-900">Struktur Organisasi</h2>
-                <div class="org-container">
-                    <div class="org-tier single">
-                        ${MemberCard("Zairin")}
-                    </div>
-                    <div class="line-down"></div>
-                    <div class="relative pt-16">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
-                        ${MemberCard("Dino Manarso")}
-                    </div>
-                    <div class="line-down"></div>
-                    
-                    <!-- Tier Anggota (Setara) -->
-                    <div class="org-tier">
-                        <!-- Garis Konektor Horizontal -->
-                        <div class="absolute top-16 left-0 right-0 h-0.5 bg-slate-200" style="max-width: 90%; margin: 0 auto;"></div>
-                        <!-- Garis Konektor Vertikal (tengah) -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
+                <!-- STRUKTUR ORGANISASI (Layout Grid Baru) -->
+                <div class="bg-slate-50/70 p-8 md:p-16 rounded-[2.5rem] border border-blue-100">
+                    <h2 class="text-4xl font-bold text-center mb-16 font-serif text-slate-900">Struktur Organisasi</h2>
+                    <div class="flex flex-col items-center max-w-5xl mx-auto">
+                        
+                        <!-- Pimpinan -->
+                        ${LeaderCard("Zairin")}
+                        <div class="org-line my-4"></div>
+                        ${LeaderCard("Dino Manarso")}
+                        <div class="org-line my-4"></div>
 
-                        ${["Hardiansyah", "Fauzi Kasran", "Endang Lestasi", "Iwan Padeli", "Wan Junaidi", "Supriyadi", "Apria Rico"].map(name => `
-                        <div class="relative pt-16">
-                            <!-- Garis konektor vertikal untuk setiap kartu -->
-                            <div class="absolute top-16 left-1/2 -translate-x-1/2 w-0.5 h-0 bg-slate-200" style="height: 0; top: 0;"></div>
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
-                            ${MemberCard(name)}
-                        </div>`).join('')}
+                        <!-- Judul Anggota -->
+                        <div class="text-center my-8">
+                            <h3 class="text-2xl font-serif font-bold text-slate-700">Anggota PTI</h3>
+                            <div class="w-20 h-1 bg-pti-gold mx-auto mt-2 rounded-full"></div>
+                        </div>
+                        
+                        <!-- Grid Anggota -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
+                            ${["Hardiansyah", "Fauzi Kasran", "Endang Lestasi", "Iwan Padeli", "Wan Junaidi", "Supriyadi", "Apria Rico"].map(name => MemberCard(name)).join('')}
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -995,6 +1128,14 @@
                             <div class="space-y-6">
                                 <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Terlapor</label><input id="rptName" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition font-medium" placeholder="Nama Personil..." required></div>
                                 <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Email Pelapor</label><input id="rptEmail" type="email" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition font-medium" placeholder="email@anda.com" required></div>
+                                
+                                <!-- Input WA Baru -->
+                                <div class="group">
+                                    <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Nomor WhatsApp (Opsional)</label>
+                                    <input id="rptWA" type="tel" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition font-medium" placeholder="0812xxxx.... (Notifikasi WA)">
+                                    <p class="text-xs text-slate-400 mt-2 ml-2">Isi untuk mengirim kode tiket ke WA Anda (manual).</p>
+                                </div>
+                                
                                 <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Tanggal Kejadian</label><input id="rptDate" type="date" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl outline-none focus:border-pti focus:bg-white transition text-slate-600" required></div>
                                 <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Bukti Foto</label><div class="flex items-center gap-4 p-3 border border-blue-100 bg-slate-50 rounded-2xl"><label class="cursor-pointer bg-white border border-blue-200 text-pti px-5 py-3 rounded-xl font-bold text-sm hover:bg-blue-50 transition shadow-sm flex items-center gap-3"><i class="fa-solid fa-camera"></i> Upload<input type="file" class="hidden" accept="image/*" onchange="window.handleImageUpload(this.files[0], b=>{document.getElementById('rptEvidenceVal').value=b; document.getElementById('rptEvidencePrev').src=b; document.getElementById('rptEvidencePrev').classList.remove('hidden')})"></label><img id="rptEvidencePrev" class="h-12 w-12 object-cover rounded-lg hidden border border-slate-200 shadow-sm"><input type="hidden" id="rptEvidenceVal"></div></div>
                                 <div class="group"><label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-2">Kronologi</label><textarea id="rptDesc" class="w-full border border-blue-100 bg-slate-50 p-5 rounded-2xl h-40 outline-none focus:border-pti focus:bg-white transition font-medium resize-none" placeholder="Detail kejadian..." required></textarea></div>
