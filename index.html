@@ -4,14 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- SEO META TAGS (WAJIB UNTUK GOOGLE) -->
+  <!-- SEO META TAGS -->
   <title>PTI Satpol PP Kab. Kepulauan Anambas - Official Portal</title>
   <meta name="description" content="Portal Resmi Unit Petugas Tindak Internal (PTI) Satpol PP Kabupaten Kepulauan Anambas. Layanan pengaduan pelanggaran (WBS), berita kegiatan, dan informasi regulasi.">
   <meta name="keywords" content="Satpol PP Anambas, PTI Anambas, Lapor Satpol PP, Polisi Pamong Praja, Kepulauan Anambas, Whistleblowing System">
   <meta name="author" content="Pemerintah Kabupaten Kepulauan Anambas">
   <meta name="robots" content="index, follow">
 
-  <!-- !! GOOGLE VERIFICATION TAG DIMASUKKAN DI SINI !! -->
   <meta name="google-site-verification" content="PNMq_K5hNlL4JEulTj8-FOtK7apz4TGzzORe3nEjYU8" />
 
   <!-- Open Graph / Facebook / WhatsApp Preview -->
@@ -89,6 +88,118 @@
     .ticket-stub { border-right: 2px dashed #cbd5e1; position: relative; }
     .ticket-stub::after { content: ''; position: absolute; right: -10px; top: -10px; width: 20px; height: 20px; background: #fff; border-radius: 50%; }
     .ticket-stub::before { content: ''; position: absolute; right: -10px; bottom: -10px; width: 20px; height: 20px; background: #fff; border-radius: 50%; }
+
+    /* Pagination & Tabs Button Styles */
+    .pagination-btn, .tab-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 1rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+    .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; background-color: #f1f5f9; color: #cbd5e1; }
+    .pagination-btn:not(:disabled):hover, .tab-btn:hover { transform: translateY(-2px); }
+    
+    .tab-btn.active {
+        background-color: #0f4c81;
+        color: white;
+        box-shadow: 0 10px 20px -5px rgba(15, 76, 129, 0.3);
+    }
+    .tab-btn.inactive {
+        background-color: white;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Organization Chart Structure */
+    .org-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: auto;
+        padding: 3rem 1rem;
+    }
+    .org-tier {
+        display: flex;
+        flex-wrap: wrap; /* Membolehkan wrapping di layar kecil */
+        justify-content: center;
+        gap: 2rem;
+        position: relative;
+        padding-top: 4rem; /* Memberi ruang untuk garis konektor */
+    }
+    .org-tier.single {
+        padding-top: 0; /* Tier pertama tidak perlu padding atas */
+    }
+    .org-card {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.06);
+        border: 1px solid #e0f2fe;
+        text-align: center;
+        width: 280px;
+        min-width: 260px;
+        flex-shrink: 0;
+        position: relative;
+    }
+    .org-card img {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: -4.5rem; /* Menarik gambar ke atas kartu */
+        position: relative;
+        z-index: 10;
+    }
+    .line-down {
+        width: 2px;
+        height: 3rem;
+        background-color: #cbd5e1;
+    }
+    /* Garis konektor vertikal untuk setiap kartu */
+    .org-card::before {
+        content: '';
+        position: absolute;
+        top: -2rem; /* (tinggi .line-down - 1rem) */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 2rem;
+        background-color: #cbd5e1;
+    }
+    /* Garis konektor horizontal (hanya untuk tier > 1) */
+    .org-tier::before {
+        content: '';
+        position: absolute;
+        top: -2rem; /* Sejajar dengan atas garis vertikal kartu */
+        left: 50%;
+        right: 50%;
+        height: 2px;
+        background-color: #cbd5e1;
+        /* Lebar akan di-set oleh JS/inline style jika > 2 card, tapi kita bisa default */
+    }
+    /* Logika untuk garis horizontal jika ada > 1 kartu */
+    .org-tier:not(.single)::before {
+        left: calc(50% - 140px); /* 140px = setengah lebar kartu */
+        right: calc(50% - 140px);
+    }
+    /* Sembunyikan garis untuk tier pertama */
+    .org-tier.single .org-card::before, .org-tier.single::before { display: none; }
+    /* Penyesuaian garis untuk kartu pertama dan terakhir di tier */
+    .org-tier:not(.single) .org-card:first-child::before {
+        left: 50%;
+        right: -1rem; /* Lebar gap / 2 */
+    }
+    .org-tier:not(.single) .org-card:last-child::before {
+        right: 50%;
+        left: -1rem; /* Lebar gap / 2 */
+    }
+    
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -174,29 +285,44 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- URL PARAMETER HANDLING FOR SEO ---
-    // Mengambil parameter ?page=... dari URL agar Google bisa mengindeks halaman spesifik
     const urlParams = new URLSearchParams(window.location.search);
     const initialPage = urlParams.get('page') || 'home';
 
-    window.state = { page: initialPage, subPage: 'form', user: null, mobileMenu: false, adminTab: 'hero', adminSidebar: false, loading: true, searchTerm: '' };
+    window.state = { 
+        page: initialPage, 
+        subPage: 'form', 
+        user: null, 
+        mobileMenu: false, 
+        adminTab: 'hero', 
+        adminSidebar: false, 
+        loading: true, 
+        searchTerm: '',
+        newsPage: 1,     
+        galleryPage: 1,
+        regCategory: 'pusat'
+    };
     
     const DEFAULT_FEATURES = [ 
         {id:'f1', icon:'fa-gavel', title:'Penindakan Disiplin', desc:'Penanganan pelanggaran indisipliner personil.', longDesc:'PTI berwenang melakukan pemanggilan, pemeriksaan (BAP), dan menyelenggarakan Sidang Kode Etik.'}, 
         {id:'f2', icon:'fa-eye', title:'Pengawasan Melekat', desc:'Monitoring kinerja & atribut personil rutin.', longDesc:'Melakukan pengawasan rutin (Gaktibplin) meliputi pemeriksaan kelengkapan Seragam Dinas (Gampol) dan sikap.'}, 
         {id:'f3', icon:'fa-hand-holding-heart', title:'Pembinaan Mental', desc:'Bintalsik dan pencegahan pelanggaran.', longDesc:'Melaksanakan fungsi preventif melalui pembinaan mental dan fisik (Bintalsik) serta konseling.'} 
     ];
+    
     const DEFAULT_REGULATIONS = [
-        {id:'r1', title:'Permendagri No. 16 Tahun 2023', cat:'SOP Satpol PP', link:'#'},
-        {id:'r2', title:'Perbup Kode Etik No 12', cat:'Peraturan Bupati', link:'#'},
-        {id:'r3', title:'PP Nomor 53 Tahun 2010', cat:'Disiplin PNS', link:'#'}
+        {id:'r1', title:'PP Nomor 53 Tahun 2010', cat:'Disiplin PNS', type:'pusat', link:'#'},
+        {id:'r2', title:'Permendagri No. 16 Tahun 2023', cat:'SOP Satpol PP', type:'pusat', link:'#'},
+        {id:'r3', title:'Perda Kab. Anambas No 1', cat:'Ketertiban Umum', type:'daerah', link:'#'},
+        {id:'r4', title:'Perbup Anambas No 12', cat:'Kode Etik', type:'perkada', link:'#'}
     ];
+    
     const DEFAULT_GALLERY = [
         {id:'g1', img:'https://images.unsplash.com/photo-1555862124-b46f3bd41171?q=80&w=800', caption:'Apel Pagi Gabungan'},
         {id:'g2', img:'https://images.unsplash.com/photo-1588502919587-47555d68f0c6?q=80&w=800', caption:'Pengamanan Aset Daerah'},
         {id:'g3', img:'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?q=80&w=800', caption:'Patroli Rutin Wilayah'},
         {id:'g4', img:'https://images.unsplash.com/photo-1626265774643-f1943311a86b?q=80&w=800', caption:'Giat Sosial Masyarakat'},
-        {id:'g5', img:'https://images.unsplash.com/photo-1591285281230-5319b340627f?q=80&w=800', caption:'Pelatihan Fisik Personil'}
+        {id:'g5', img:'https://images.unsplash.com/photo-1591285281230-5319b340627f?q=80&w=800', caption:'Pelatihan Fisik Personil'},
+        {id:'g6', img:'https://images.unsplash.com/photo-1496317556649-f930d733eea3?q=80&w=800', caption:'Pengarahan Pimpinan'},
+        {id:'g7', img:'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800', caption:'Rapat Koordinasi'},
     ];
 
     window.appData = {
@@ -214,7 +340,6 @@
         articles: [], members: [], regulations: [], features: [], reports: [], gallery: []
     };
 
-    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyCG7FMbn28_AEFNE98hKkxPCgCqUVEf9Y4",
       authDomain: "pti-anambas-web.firebaseapp.com",
@@ -233,7 +358,38 @@
             db = getFirestore(app);
             onAuthStateChanged(auth, (u) => { window.state.user = u; if(!u && window.state.page==='admin') navigate('home'); render(); });
             await loadData();
-        } catch(e) { console.error(e); document.getElementById('globalLoader').style.display='none'; render(); }
+        } catch(e) { 
+            console.warn("Firebase init error (running in demo mode):", e); 
+            window.appData.features = DEFAULT_FEATURES;
+            window.appData.gallery = DEFAULT_GALLERY;
+            window.appData.regulations = DEFAULT_REGULATIONS;
+            // Mock data anggota untuk demo struktur organisasi
+            window.appData.members = [
+                {id:'m1', name:'Zairin, S.H.', role:'Kasatpol PP', nip:'19700101...', img:'https://placehold.co/150x150/082f49/fff?text=ZR'},
+                {id:'m2', name:'Dino Manarso, S.M.', role:'Komandan PTI', nip:'19800101...', img:'https://placehold.co/150x150/0f4c81/fff?text=DM'},
+                {id:'m3', name:'Hardiansyah, S.E.', role:'Anggota PTI', nip:'19820101...', img:'https://placehold.co/150x150/e0f2fe/0f4c81?text=H'},
+                {id:'m4', name:'Fauzi Kasran', role:'Anggota PTI', nip:'19830101...', img:'https://placehold.co/150x150/e0f2fe/0f4c81?text=FK'},
+                {id:'m5', name:'Endang Lestasi', role:'Anggota PTI', nip:'19840101...', img:'https://placehold.co/150x150/e0f2fe/0f4c81?text=EL'},
+                {id:'m6', name:'Iwan Padeli Alamsyah', role:'Anggota PTI', nip:'19920101...', img:'https://placehold.co/150x150/f1f5f9/334155?text=IP'},
+                {id:'m7', name:'Wan Junaidi', role:'Anggota PTI', nip:'19910101...', img:'https://placehold.co/150x150/f1f5f9/334155?text=WJ'},
+                {id:'m8', name:'Supriyadi', role:'Anggota PTI', nip:'19900101...', img:'https://placehold.co/150x150/f1f5f9/334155?text=S'},
+                {id:'m9', name:'Apria Rico Tranjaya', role:'Anggota PTI', nip:'19930101...', img:'https://placehold.co/150x150/f1f5f9/334155?text=AR'}
+            ];
+            
+            if(window.appData.articles.length === 0) {
+                for(let i=1; i<=12; i++) {
+                    window.appData.articles.push({
+                        id: `art${i}`, title: `Berita Kegiatan Rutin PTI #${i}`, date: '2023-10-20', 
+                        cat: i%2?'Giat':'Info', img: `https://picsum.photos/800/600?random=${i}`, 
+                        content: 'Lorem ipsum dolor sit amet.'
+                    });
+                }
+            }
+            window.state.loading = false;
+            document.getElementById('globalLoader').style.display='none';
+            render();
+            initScrollReveal();
+        }
     }
 
     async function loadData() {
@@ -262,7 +418,12 @@
             if(window.appData.regulations.length === 0) window.appData.regulations = DEFAULT_REGULATIONS;
             if(window.appData.features.length === 0) window.appData.features = DEFAULT_FEATURES;
             if(window.appData.gallery.length === 0) window.appData.gallery = DEFAULT_GALLERY;
-        } catch(e) { console.warn(e); }
+        } catch(e) { 
+            console.warn("Data fetch warning (using defaults):", e);
+            window.appData.features = window.appData.features.length ? window.appData.features : DEFAULT_FEATURES;
+            window.appData.gallery = window.appData.gallery.length ? window.appData.gallery : DEFAULT_GALLERY;
+            window.appData.regulations = window.appData.regulations.length ? window.appData.regulations : DEFAULT_REGULATIONS;
+        }
         window.state.loading = false;
         document.getElementById('globalLoader').style.display='none';
         render();
@@ -281,17 +442,19 @@
         counters.forEach(c => obsCounter.observe(c));
     }
 
-    // --- NAVIGATION WITH URL UPDATES ---
     window.navigate = (p) => { 
         if(p==='admin' && !window.state.user){ document.getElementById('loginModal').showModal(); return; }
         
-        // Update State
         window.state.page = p; 
         window.state.subPage = 'form'; 
         window.state.mobileMenu = false; 
         window.state.adminSidebar = false; 
         
-        // Update URL (Penting untuk SEO agar halaman bisa di-bookmark/index)
+        window.state.newsPage = 1;
+        window.state.galleryPage = 1;
+        
+        if(p === 'regulasi') window.state.regCategory = 'pusat';
+        
         if(p === 'home') {
             window.history.pushState({page: p}, "", "/");
             document.title = "PTI Satpol PP Kab. Kepulauan Anambas - Official";
@@ -305,11 +468,43 @@
         setTimeout(initScrollReveal, 100);
     }
     
-    // Handle tombol back browser
     window.onpopstate = (event) => {
         const p = new URLSearchParams(window.location.search).get('page') || 'home';
         window.state.page = p;
         render();
+    };
+
+    window.changePage = (type, dir) => {
+        const scrollTarget = type === 'news' ? 'berita-container' : 'gallery-container';
+        if (type === 'news') window.state.newsPage += dir;
+        else if (type === 'gallery') window.state.galleryPage += dir;
+        render();
+        const el = document.getElementById(scrollTarget);
+        if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+
+    window.setRegCat = (cat) => {
+        window.state.regCategory = cat;
+        window.state.searchTerm = '';
+        render();
+    }
+
+    // Helper untuk struktur organisasi: Cari anggota berdasarkan nama
+    window.findMember = (name) => {
+        // Coba cari nama lengkap atau nama panggilan
+        const member = window.appData.members.find(m => 
+            m.name.toLowerCase().includes(name.toLowerCase())
+        );
+        if (member) {
+            return member;
+        }
+        // Return placeholder jika tidak ditemukan di DB
+        return {
+            name: name,
+            role: 'Anggota PTI',
+            nip: 'N/A',
+            img: `https://placehold.co/150x150/e2e8f0/94a3b8?text=${name.substring(0,1)}`
+        };
     };
 
     window.toggleMobile = () => { window.state.mobileMenu = !window.state.mobileMenu; render(); }
@@ -323,7 +518,6 @@
     window.handleImageUpload = (file, cb) => { if(!file || !file.type.match('image.*')) return showToast("Harus File Gambar", true); const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.onload=()=>{ const c=document.createElement('canvas'); let w=i.width,h=i.height,m=800; if(w>h){if(w>m){h*=m/w;w=m}}else{if(h>m){w*=m/h;h=m}} c.width=w; c.height=h; c.getContext('2d').drawImage(i,0,0,w,h); cb(c.toDataURL('image/jpeg',0.7)); }; i.src=e.target.result; }; r.readAsDataURL(file); }
     window.handleSearch = (val) => { window.state.searchTerm = val.toLowerCase(); render(); }
     
-    // --- LIGHTBOX ---
     window.openLightbox = (src, cap) => {
         const lb = document.getElementById('lightbox');
         document.getElementById('lightboxImg').src = src;
@@ -331,7 +525,6 @@
         lb.classList.add('open');
     }
 
-    // --- TICKET TRACKING ---
     window.checkTicket = async (e) => {
         e.preventDefault();
         const ticketId = document.getElementById('trackInput').value.trim();
@@ -356,7 +549,7 @@
         try {
             await addDoc(collection(db, "reports"), { 
                 ticketId: ticketId,
-                status: 'Diterima', // Initial Status
+                status: 'Diterima',
                 terlapor: document.getElementById('rptName').value, 
                 email: document.getElementById('rptEmail').value, 
                 tanggal: document.getElementById('rptDate').value, 
@@ -376,7 +569,6 @@
         try { await updateDoc(doc(db, "reports", id), { status: newStatus }); showToast("Status Diperbarui"); await loadData(); } catch(e){ showToast("Gagal Update", true); }
     }
 
-    // --- UI HELPERS ---
     window.viewArticle = (id) => { const a = window.appData.articles.find(x=>x.id===id); if(!a)return; const h=`<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onclick="this.remove()"><div class="bg-white w-full max-w-2xl max-h-[90vh] rounded-2xl overflow-hidden relative flex flex-col shadow-2xl border border-white/20" onclick="event.stopPropagation()"><button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition backdrop-blur-md"><i class="fa-solid fa-xmark"></i></button><div class="h-72 shrink-0 bg-slate-100"><img src="${a.img}" class="w-full h-full object-cover"></div><div class="p-8 overflow-y-auto"><span class="text-pti font-bold text-[10px] uppercase tracking-widest mb-2 block text-slate-400">${a.date} &bull; ${a.cat||'Berita'}</span><h2 class="text-3xl font-bold font-serif mb-6 text-slate-800 leading-tight">${a.title}</h2><p class="text-slate-600 leading-relaxed whitespace-pre-line text-lg">${a.content}</p></div></div></div>`; document.body.insertAdjacentHTML('beforeend', h); }
     window.showFeatureDetail = (id) => { const f = window.appData.features.find(x => x.id === id) || DEFAULT_FEATURES.find(x => x.id === id); if(!f) return; const h=`<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onclick="this.remove()"><div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden relative shadow-2xl" onclick="event.stopPropagation()"><div class="bg-white p-10 text-center"><div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center text-pti text-3xl mx-auto mb-6 shadow-inner border border-blue-100"><i class="fa-solid ${f.icon}"></i></div><h3 class="text-2xl font-serif font-bold text-slate-800 mb-2">${f.title}</h3><div class="w-12 h-1 bg-pti mx-auto rounded-full"></div></div><div class="p-10 pt-4"><p class="text-slate-600 leading-relaxed text-justify mb-8 text-lg">${f.longDesc || f.desc}</p><button onclick="this.closest('.fixed').remove()" class="w-full py-4 bg-pti text-white rounded-xl font-bold hover:bg-pti-dark transition shadow-lg shadow-pti/30">Tutup</button></div></div></div>`; document.body.insertAdjacentHTML('beforeend', h); }
 
@@ -391,7 +583,21 @@
         const InpStyle = "w-full border border-slate-200 p-3 rounded-lg mb-3 text-sm font-medium focus:border-pti outline-none transition";
         if(t==='articles') f = `${ImgInp(item?.img)}<input id="fTitle" class="${InpStyle}" placeholder="Judul Berita" value="${safe(item?.title)}"><div class="grid grid-cols-2 gap-3 mb-3"><input id="fCat" class="${InpStyle} mb-0" placeholder="Kategori" value="${safe(item?.cat||'Giat')}"><input type="date" id="fDate" class="${InpStyle} mb-0" value="${item?.date||''}"></div><textarea id="fContent" class="${InpStyle} h-32" placeholder="Isi Berita...">${item?.content||''}</textarea>`;
         else if(t==='members') f = `${ImgInp(item?.img)}<input id="fName" class="${InpStyle}" placeholder="Nama Personil" value="${safe(item?.name)}"><input id="fRole" class="${InpStyle}" placeholder="Jabatan" value="${safe(item?.role)}"><input id="fNip" class="${InpStyle}" placeholder="NIP" value="${safe(item?.nip)}">`;
-        else if(t==='regulations') f = `<input id="fTitle" class="${InpStyle}" placeholder="Nama Dokumen" value="${safe(item?.title)}"><input id="fCat" class="${InpStyle}" placeholder="Jenis/Kategori" value="${safe(item?.cat)}"><input id="fLink" class="${InpStyle}" placeholder="Link Download" value="${safe(item?.link)}">`;
+        
+        else if(t==='regulations') f = `
+            <div class="mb-3">
+                <label class="text-xs font-bold text-slate-500 uppercase block mb-1">Jenis Dokumen</label>
+                <select id="fType" class="${InpStyle}">
+                    <option value="pusat" ${item?.type==='pusat'?'selected':''}>Peraturan Pusat (UU/PP)</option>
+                    <option value="daerah" ${item?.type==='daerah'?'selected':''}>Peraturan Daerah (Perda)</option>
+                    <option value="perkada" ${item?.type==='perkada'?'selected':''}>Peraturan Kepala Daerah (Perbup)</option>
+                    <option value="internal" ${item?.type==='internal'?'selected':''}>SOP / Internal</option>
+                </select>
+            </div>
+            <input id="fTitle" class="${InpStyle}" placeholder="Nama Dokumen (Misal: Perbup No 12)" value="${safe(item?.title)}">
+            <input id="fCat" class="${InpStyle}" placeholder="Topik (Misal: Disiplin PNS)" value="${safe(item?.cat)}">
+            <input id="fLink" class="${InpStyle}" placeholder="Link Download (URL)" value="${safe(item?.link)}">`;
+            
         else if(t==='features') f = `<input id="fTitle" class="${InpStyle}" placeholder="Judul Layanan" value="${safe(item?.title)}"><input id="fIcon" class="${InpStyle}" placeholder="Icon Class (fa-solid fa-gavel)" value="${safe(item?.icon)}"><textarea id="fDesc" class="${InpStyle} h-20" placeholder="Deskripsi Singkat">${item?.desc||''}</textarea><textarea id="fLongDesc" class="${InpStyle} h-32" placeholder="Penjelasan Lengkap">${item?.longDesc||''}</textarea>`;
         else if(t==='gallery') f = `${ImgInp(item?.img)}<input id="fCaption" class="${InpStyle}" placeholder="Keterangan Foto (Caption)" value="${safe(item?.caption)}">`;
 
@@ -404,7 +610,9 @@
         let d={};
         if(t==='articles') d={title:document.getElementById('fTitle').value, content:document.getElementById('fContent').value, date:document.getElementById('fDate').value, cat:document.getElementById('fCat').value, img:document.getElementById('fImg').value};
         else if(t==='members') d={name:document.getElementById('fName').value, role:document.getElementById('fRole').value, nip:document.getElementById('fNip').value, img:document.getElementById('fImg').value};
-        else if(t==='regulations') d={title:document.getElementById('fTitle').value, cat:document.getElementById('fCat').value, link:document.getElementById('fLink').value};
+        
+        else if(t==='regulations') d={title:document.getElementById('fTitle').value, cat:document.getElementById('fCat').value, type:document.getElementById('fType').value, link:document.getElementById('fLink').value};
+        
         else if(t==='features') d={title:document.getElementById('fTitle').value, icon:document.getElementById('fIcon').value, desc:document.getElementById('fDesc').value, longDesc:document.getElementById('fLongDesc').value};
         else if(t==='gallery') d={caption:document.getElementById('fCaption').value, img:document.getElementById('fImg').value};
         saveCRUD_DB(t, id||null, d);
@@ -424,7 +632,7 @@
                         </div>
                     </div>
                     <div class="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-full border border-slate-200/60 backdrop-blur-sm">
-                        ${['home','berita','regulasi','tentang'].map(p=>`<button onclick="navigate('${p}')" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-300 ${s.page===p?'bg-white text-pti shadow-sm scale-105':'text-slate-500 hover:text-pti hover:bg-slate-100'}">${p==='home'?'Beranda':p}</button>`).join('')}
+                        ${['home','berita','galeri','regulasi','tentang'].map(p=>`<button onclick="navigate('${p}')" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-300 ${s.page===p?'bg-white text-pti shadow-sm scale-105':'text-slate-500 hover:text-pti hover:bg-slate-100'}">${p==='home'?'Beranda':p}</button>`).join('')}
                     </div>
                     <div class="hidden lg:flex items-center gap-3">
                         <button onclick="${s.user?"navigate('admin')":"navigate('lapor')"}" class="bg-pti text-white px-7 py-3 rounded-full text-xs font-bold shadow-lg shadow-pti/20 hover:bg-pti-dark hover:shadow-pti/40 transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-0.5"><i class="fa-solid ${s.user?'fa-user-gear':'fa-bullhorn'}"></i> ${s.user?'Admin Dashboard':'Lapor WBS'}</button>
@@ -434,7 +642,7 @@
             </nav>
             <div class="${s.mobileMenu?'block':'hidden'} fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm transition-opacity" onclick="toggleMobile()"></div>
             <div class="fixed top-0 right-0 w-80 h-full bg-white z-[70] shadow-2xl p-8 transition-transform duration-300 ${s.mobileMenu?'translate-x-0':'translate-x-full'} flex flex-col gap-3 pt-28">
-                ${['home','berita','regulasi','tentang','lapor'].map(p=>`<button onclick="navigate('${p}')" class="text-left px-5 py-4 rounded-2xl font-bold text-sm capitalize hover:bg-slate-50 transition-colors ${s.page===p?'text-pti bg-blue-50/50':''}" >${p}</button>`).join('')}
+                ${['home','berita','galeri','regulasi','tentang','lapor'].map(p=>`<button onclick="navigate('${p}')" class="text-left px-5 py-4 rounded-2xl font-bold text-sm capitalize hover:bg-slate-50 transition-colors ${s.page===p?'text-pti bg-blue-50/50':''}" >${p}</button>`).join('')}
                 <button onclick="navigate('admin')" class="text-left px-5 py-4 font-bold text-sm text-slate-400 border-t mt-auto flex items-center gap-3 hover:text-pti"><i class="fa-solid fa-lock"></i> Admin Panel</button>
             </div>`;
 
@@ -468,7 +676,6 @@
                     </div>`).join(''):`<div class="text-center p-10 text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Belum ada laporan masuk.</div>`}</div>`;
             } else {
                 const items = window.appData[s.adminTab] || [];
-                // Layout khusus Gallery di Admin
                 if(s.adminTab === 'gallery') {
                     admContent = `<div class="flex justify-between items-center mb-8"><h3 class="font-bold capitalize text-2xl text-slate-800">Data Galeri Foto</h3><button onclick="openEditor('gallery')" class="bg-pti text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-pti/20 hover:bg-pti-dark transition transform hover:-translate-y-0.5">+ Tambah Foto</button></div><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">${items.map(i=>`<div class="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm group relative"><img src="${i.img}" class="w-full h-40 object-cover bg-slate-100"><div class="p-3"><p class="text-xs font-bold text-slate-700 truncate">${i.caption || 'Tanpa Keterangan'}</p></div><div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="deleteItem_DB('gallery','${i.id}')" class="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 shadow-sm"><i class="fa-solid fa-trash text-xs"></i></button></div></div>`).join('')}</div>`;
                 } else {
@@ -503,8 +710,10 @@
         // PUBLIC CONTENT
         let content = '';
         if(s.loading) content = `<div class="pt-32 max-w-7xl mx-auto px-6 pb-20">${Skeleton}</div>`;
-        else if(s.page==='home') content=`
-            <!-- --- PERUBAHAN PADDING MOBILE (pt-40 md:pt-24) AGAR TIDAK TERTUTUP --- -->
+        else if(s.page==='home') {
+            const limitedGallery = (window.appData.gallery || []).slice(0, 6);
+            const limitedNews = (window.appData.articles || []).slice(0, 3);
+            content=`
             <section class="relative min-h-[900px] flex items-center px-6 -mt-24 pt-40 md:pt-24 pb-48" style="background-image: url('${d.heroImage}'); background-size: cover; background-position: center;">
                 <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent z-0"></div>
                 <div class="relative z-10 max-w-7xl mx-auto w-full text-white">
@@ -542,11 +751,10 @@
                 </div>
             </section>
 
-            <!-- --- GALLERY SECTION (MASONRY) --- -->
             <section class="max-w-7xl mx-auto px-6 mb-40 reveal">
                 <div class="text-center mb-16"><span class="text-pti-gold font-bold text-[11px] uppercase tracking-[0.3em] bg-orange-50 px-4 py-2 rounded-full">Dokumentasi Lapangan</span><h2 class="text-4xl md:text-5xl font-serif font-bold text-slate-900 mt-6 tracking-tight">Galeri Kegiatan</h2></div>
                 <div class="masonry-grid">
-                    ${(window.appData.gallery||[]).map(g=>`
+                    ${limitedGallery.map(g=>`
                     <div onclick="window.openLightbox('${g.img}', '${g.caption}')" class="masonry-item relative rounded-2xl overflow-hidden cursor-pointer group shadow-card">
                         <img src="${g.img}" class="w-full h-auto object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-6">
@@ -556,6 +764,9 @@
                             </div>
                         </div>
                     </div>`).join('')}
+                </div>
+                <div class="text-center mt-12">
+                    <button onclick="navigate('galeri')" class="bg-slate-100 text-slate-600 hover:bg-pti hover:text-white px-8 py-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm">Lihat Seluruh Galeri <i class="fa-solid fa-arrow-right ml-2"></i></button>
                 </div>
             </section>
 
@@ -578,16 +789,193 @@
 
             <section class="max-w-7xl mx-auto px-6 mb-32 reveal">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6"><div><span class="text-pti font-bold text-[10px] uppercase tracking-[0.2em] mb-2 block">Dokumentasi</span><h2 class="text-4xl font-serif font-bold text-slate-800">Giat Terkini</h2></div><button onclick="navigate('berita')" class="text-sm font-bold text-pti border-b-2 border-pti pb-1 hover:text-blue-800 transition">Lihat Arsip Lengkap <i class="fa-solid fa-arrow-right ml-2"></i></button></div>
-                <div class="grid md:grid-cols-3 gap-10">${(window.appData.articles||[]).slice(0,3).map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] overflow-hidden shadow-card border border-blue-100 cursor-pointer group hover:-translate-y-2 transition-all duration-500"><div class="h-64 overflow-hidden bg-slate-100 relative"><img src="${a.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000"><div class="absolute top-5 left-5 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-pti shadow-lg">${a.cat||'Giat'}</div></div><div class="p-8"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-regular fa-clock"></i> ${a.date}</div><h3 class="text-xl font-bold text-slate-800 font-serif leading-snug mb-4 group-hover:text-pti transition">${a.title}</h3><div class="text-xs font-bold text-slate-300 group-hover:text-pti transition flex items-center gap-2">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></div></div></div>`).join('')}</div>
+                <div class="grid md:grid-cols-3 gap-10">${limitedNews.map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] overflow-hidden shadow-card border border-blue-100 cursor-pointer group hover:-translate-y-2 transition-all duration-500"><div class="h-64 overflow-hidden bg-slate-100 relative"><img src="${a.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000"><div class="absolute top-5 left-5 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-pti shadow-lg">${a.cat||'Giat'}</div></div><div class="p-8"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-regular fa-clock"></i> ${a.date}</div><h3 class="text-xl font-bold text-slate-800 font-serif leading-snug mb-4 group-hover:text-pti transition">${a.title}</h3><div class="text-xs font-bold text-slate-300 group-hover:text-pti transition flex items-center gap-2">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></div></div></div>`).join('')}</div>
             </section>`;
-
-        else if(s.page==='regulasi') {
-            const filtered = window.appData.regulations.filter(r => r.title.toLowerCase().includes(s.searchTerm) || r.cat.toLowerCase().includes(s.searchTerm));
-            content=`<div class="pt-40 max-w-4xl mx-auto px-6 pb-32"><div class="text-center mb-16"><h1 class="text-5xl font-serif font-bold mb-6 text-slate-800">Regulasi & SOP</h1><p class="text-xl text-slate-500 max-w-2xl mx-auto">Kumpulan dokumen dasar hukum dan standar operasional prosedur.</p></div><div class="relative mb-12"><input oninput="window.handleSearch(this.value)" placeholder="Cari Dokumen..." class="w-full border border-slate-200 p-5 pl-14 rounded-2xl shadow-sm outline-none focus:border-pti focus:ring-4 focus:ring-pti/5 transition text-lg"><i class="fa-solid fa-search absolute left-6 top-6 text-slate-400 text-xl"></i></div><div class="grid gap-5">${filtered.length?filtered.map(r=>`<div class="bg-white p-8 rounded-3xl shadow-soft border border-blue-100 flex items-center justify-between hover:border-pti/30 transition group hover:-translate-y-1 duration-300"><div class="flex items-center gap-8"><div class="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition"><i class="fa-solid fa-file-pdf"></i></div><div><h3 class="font-bold text-xl text-slate-800 group-hover:text-pti transition font-serif">${r.title}</h3><div class="text-xs text-slate-500 font-bold uppercase mt-2 tracking-wider bg-slate-50 inline-block px-2 py-1 rounded">${r.cat}</div></div></div><a href="${r.link}" target="_blank" class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-pti hover:text-white transition shadow-sm"><i class="fa-solid fa-download"></i></a></div>`).join(''):'<div class="text-center text-slate-400 py-20 bg-slate-50 rounded-3xl">Dokumen tidak ditemukan.</div>'}</div></div>`;
         }
-        else if(s.page==='berita') content=`<div class="pt-40 max-w-7xl mx-auto px-6 pb-32"><h1 class="text-5xl font-serif font-bold mb-16 text-center text-slate-800">Arsip Berita</h1><div class="grid md:grid-cols-3 gap-10">${window.appData.articles.map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] shadow-card border border-blue-100 overflow-hidden cursor-pointer hover:scale-[1.02] transition duration-500"><img src="${a.img}" class="h-64 w-full object-cover bg-slate-100"><div class="p-8"><div class="text-xs font-bold text-pti mb-3 flex items-center gap-2"><i class="fa-regular fa-calendar"></i> ${a.date}</div><h3 class="font-bold text-slate-800 font-serif text-xl leading-snug">${a.title}</h3></div></div>`).join('')}</div></div>`;
+        else if(s.page==='regulasi') {
+            const allRegs = window.appData.regulations;
+            const filtered = allRegs.filter(r => {
+                const rType = r.type || (r.title.includes('PP')||r.title.includes('UU')?'pusat':r.title.includes('Perda')?'daerah':'internal');
+                return rType === s.regCategory && (r.title.toLowerCase().includes(s.searchTerm) || r.cat.toLowerCase().includes(s.searchTerm));
+            });
+
+            content=`<div class="pt-40 max-w-5xl mx-auto px-6 pb-32">
+                <div class="text-center mb-12">
+                    <h1 class="text-5xl font-serif font-bold mb-6 text-slate-800">Regulasi & SOP</h1>
+                    <p class="text-xl text-slate-500 max-w-2xl mx-auto">Kumpulan dokumen dasar hukum dan standar operasional prosedur.</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button onclick="setRegCat('pusat')" class="tab-btn ${s.regCategory==='pusat'?'active':'inactive'}">Peraturan Pusat</button>
+                    <button onclick="setRegCat('daerah')" class="tab-btn ${s.regCategory==='daerah'?'active':'inactive'}">Peraturan Daerah</button>
+                    <button onclick="setRegCat('perkada')" class="tab-btn ${s.regCategory==='perkada'?'active':'inactive'}">Peraturan Kepala Daerah</button>
+                    <button onclick="setRegCat('internal')" class="tab-btn ${s.regCategory==='internal'?'active':'inactive'}">SOP & Internal</button>
+                </div>
+
+                <div class="relative mb-10">
+                    <input oninput="window.handleSearch(this.value)" placeholder="Cari Dokumen di kategori ini..." class="w-full border border-slate-200 p-5 pl-14 rounded-2xl shadow-sm outline-none focus:border-pti focus:ring-4 focus:ring-pti/5 transition text-lg">
+                    <i class="fa-solid fa-search absolute left-6 top-6 text-slate-400 text-xl"></i>
+                </div>
+
+                <div class="grid gap-5 animate-fade-in">
+                    ${filtered.length ? filtered.map(r=>`
+                    <div class="bg-white p-8 rounded-3xl shadow-soft border border-blue-100 flex items-center justify-between hover:border-pti/30 transition group hover:-translate-y-1 duration-300">
+                        <div class="flex items-center gap-8">
+                            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition shrink-0">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl text-slate-800 group-hover:text-pti transition font-serif leading-tight mb-2">${r.title}</h3>
+                                <div class="flex gap-2">
+                                    <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider bg-slate-50 inline-block px-2 py-1 rounded border border-slate-100">${r.cat}</div>
+                                    <div class="text-[10px] text-pti font-bold uppercase tracking-wider bg-blue-50 inline-block px-2 py-1 rounded border border-blue-100">${r.type==='perkada'?'Perbup':r.type||'Internal'}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="${r.link}" target="_blank" class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-pti hover:text-white transition shadow-sm shrink-0"><i class="fa-solid fa-download"></i></a>
+                    </div>`).join('') : 
+                    `<div class="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                        <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500 font-bold">Tidak ada dokumen ditemukan.</p>
+                        <p class="text-slate-400 text-sm">Coba ganti kategori tab atau kata kunci.</p>
+                    </div>`}
+                </div>
+            </div>`;
+        }
+        else if(s.page==='berita') {
+            const itemsPerPage = 6;
+            const allArticles = window.appData.articles || [];
+            const totalNewsPages = Math.ceil(allArticles.length / itemsPerPage);
+            const currentNewsPage = s.newsPage || 1;
+            const startIdx = (currentNewsPage - 1) * itemsPerPage;
+            const displayedArticles = allArticles.slice(startIdx, startIdx + itemsPerPage);
+
+            content=`
+            <div class="pt-40 max-w-7xl mx-auto px-6 pb-32" id="berita-container">
+                <h1 class="text-5xl font-serif font-bold mb-16 text-center text-slate-800">Arsip Berita</h1>
+                <div class="grid md:grid-cols-3 gap-10">
+                    ${displayedArticles.map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] shadow-card border border-blue-100 overflow-hidden cursor-pointer hover:scale-[1.02] transition duration-500"><img src="${a.img}" class="h-64 w-full object-cover bg-slate-100"><div class="p-8"><div class="text-xs font-bold text-pti mb-3 flex items-center gap-2"><i class="fa-regular fa-calendar"></i> ${a.date}</div><h3 class="font-bold text-slate-800 font-serif text-xl leading-snug">${a.title}</h3></div></div>`).join('')}
+                </div>
+                <div class="flex justify-center items-center gap-6 mt-16">
+                    <button onclick="changePage('news', -1)" class="pagination-btn ${currentNewsPage === 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-200 text-slate-700 hover:bg-pti hover:text-white hover:border-pti'}" ${currentNewsPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left mr-2"></i> Sebelumnya</button>
+                    <span class="font-bold text-sm text-slate-500">Halaman ${currentNewsPage} dari ${totalNewsPages}</span>
+                    <button onclick="changePage('news', 1)" class="pagination-btn ${currentNewsPage >= totalNewsPages ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-200 text-slate-700 hover:bg-pti hover:text-white hover:border-pti'}" ${currentNewsPage >= totalNewsPages ? 'disabled' : ''}>Selanjutnya <i class="fa-solid fa-chevron-right ml-2"></i></button>
+                </div>
+            </div>`;
+        }
+        else if(s.page==='galeri') {
+            const itemsPerPage = 9;
+            const allGallery = window.appData.gallery || [];
+            const totalGalleryPages = Math.ceil(allGallery.length / itemsPerPage);
+            const currentGalleryPage = s.galleryPage || 1;
+            const startIdx = (currentGalleryPage - 1) * itemsPerPage;
+            const displayedGallery = allGallery.slice(startIdx, startIdx + itemsPerPage);
+
+            content=`
+            <div class="pt-40 max-w-7xl mx-auto px-6 pb-32" id="gallery-container">
+                <h1 class="text-5xl font-serif font-bold mb-6 text-center text-slate-800">Galeri Dokumentasi</h1>
+                <p class="text-center text-slate-500 mb-16 max-w-2xl mx-auto">Arsip lengkap kegiatan lapangan dan acara seremonial Satpol PP.</p>
+                
+                <div class="masonry-grid">
+                    ${displayedGallery.map(g=>`
+                    <div onclick="window.openLightbox('${g.img}', '${g.caption}')" class="masonry-item relative rounded-2xl overflow-hidden cursor-pointer group shadow-card bg-white border border-blue-50">
+                        <img src="${g.img}" class="w-full h-auto object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex flex-col justify-end p-6">
+                            <div class="transform translate-y-4 group-hover:translate-y-0 transition duration-500">
+                                <p class="text-white font-serif italic text-lg">"${g.caption}"</p>
+                                <div class="w-10 h-1 bg-pti-gold mt-3 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>`).join('')}
+                </div>
+                <div class="flex justify-center items-center gap-6 mt-16">
+                    <button onclick="changePage('gallery', -1)" class="pagination-btn ${currentGalleryPage === 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-200 text-slate-700 hover:bg-pti hover:text-white hover:border-pti'}" ${currentGalleryPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left mr-2"></i> Sebelumnya</button>
+                    <span class="font-bold text-sm text-slate-500">Halaman ${currentGalleryPage} dari ${totalGalleryPages}</span>
+                    <button onclick="changePage('gallery', 1)" class="pagination-btn ${currentGalleryPage >= totalGalleryPages ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-200 text-slate-700 hover:bg-pti hover:text-white hover:border-pti'}" ${currentGalleryPage >= totalGalleryPages ? 'disabled' : ''}>Selanjutnya <i class="fa-solid fa-chevron-right ml-2"></i></button>
+                </div>
+            </div>`;
+        }
         
-        else if(s.page==='tentang') content=`<div class="pt-40 max-w-6xl mx-auto px-6 pb-32"><div class="text-center mb-20"><h1 class="text-6xl font-bold font-serif mb-8 text-slate-900">Profil Satuan</h1><p class="text-3xl text-slate-500 font-serif italic max-w-4xl mx-auto leading-relaxed border-y border-slate-100 py-10">"${window.appData.profile.visi}"</p></div><div class="grid md:grid-cols-2 gap-12 mb-32"><div class="bg-white p-12 rounded-[3rem] shadow-card border border-blue-100"><h3 class="text-2xl font-bold text-pti mb-8 flex items-center gap-4 font-serif"><i class="fa-solid fa-bullseye bg-blue-50 p-3 rounded-xl"></i> Misi Kami</h3><ul class="space-y-6">${(window.appData.profile.misi||[]).map(m=>`<li class="flex gap-5 text-slate-600 leading-relaxed text-lg"><i class="fa-solid fa-check text-white bg-green-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] mt-1 shadow-md"></i> <span>${m}</span></li>`).join('')}</ul></div><div class="bg-pti text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden"><div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div><h3 class="text-2xl font-bold mb-8 flex items-center gap-4 font-serif relative z-10"><i class="fa-solid fa-list-check bg-white/20 p-3 rounded-xl backdrop-blur-sm"></i> Tupoksi</h3><ul class="space-y-6 relative z-10">${(window.appData.profile.tupoksi||[]).map(m=>`<li class="flex gap-5 opacity-90 leading-relaxed text-lg"><i class="fa-solid fa-angle-right mt-1.5"></i> <span>${m}</span></li>`).join('')}</ul></div></div><h2 class="text-4xl font-bold text-center mb-16 font-serif text-slate-900">Personil Unit PTI</h2><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">${(window.appData.members||[]).map(m=>`<div class="bg-white p-8 rounded-[2.5rem] shadow-card border border-blue-100 text-center hover:-translate-y-3 transition duration-300 group"><div class="w-32 h-32 mx-auto mb-6 relative"><div class="absolute inset-0 bg-pti rounded-full opacity-10 group-hover:scale-110 transition duration-500"></div><img src="${m.img}" class="w-full h-full rounded-full object-cover border-4 border-white shadow-lg relative z-10"></div><h3 class="font-bold text-slate-800 text-xl font-serif mb-1">${m.name}</h3><p class="text-[10px] text-pti font-bold uppercase tracking-[0.2em]">${m.role}</p><div class="mt-4 text-[10px] text-slate-400 bg-slate-50 inline-block px-4 py-1.5 rounded-full font-mono border border-slate-100 group-hover:border-pti/30 transition">${m.nip}</div></div>`).join('')}</div></div>`;
+        else if(s.page==='tentang') {
+            // Helper function untuk membuat kartu anggota
+            const MemberCard = (name) => {
+                const m = window.findMember(name); // Gunakan helper yang sudah ada
+                return `
+                <div class="org-card">
+                    <img src="${m.img}" alt="${m.name}">
+                    <h3 class="font-bold text-slate-800 text-xl font-serif mt-4 mb-1">${m.name}</h3>
+                    <p class="text-[10px] text-pti font-bold uppercase tracking-[0.2em]">${m.role}</p>
+                    <div class="mt-4 text-[10px] text-slate-400 bg-slate-50 inline-block px-4 py-1.5 rounded-full font-mono border border-slate-100">${m.nip}</div>
+                </div>`;
+            };
+            
+            // Helper untuk membuat satu baris/tier
+            const ConnectTier = (names) => {
+                // Tentukan style untuk garis horizontal berdasarkan jumlah kartu
+                let lineStyle = 'width: 0;';
+                if (names.length > 1) {
+                    const cardWidth = 280; // Lebar kartu
+                    const gap = 32; // Gap antar kartu (2rem)
+                    const totalWidth = (names.length * cardWidth) + ((names.length - 1) * gap);
+                    // Lebar garis adalah dari tengah kartu pertama ke tengah kartu terakhir
+                    const lineWidth = totalWidth - cardWidth;
+                    lineStyle = `width: ${lineWidth}px; max-width: 90%;`;
+                }
+                
+                return `
+                <div class="org-tier ${names.length === 1 ? 'single' : ''}" style="${names.length > 1 ? 'position: relative;' : ''}">
+                    <!-- Garis Konektor Horizontal (HANYA JIKA > 1) -->
+                    ${names.length > 1 ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 bg-slate-200" style="${lineStyle}"></div>` : ''}
+                    
+                    <!-- Garis Konektor Vertikal (tengah) -->
+                    ${names.length > 1 ? `<div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>` : ''}
+
+                    ${names.map(name => `
+                    <div class="relative pt-16">
+                        <!-- Garis konektor vertikal untuk setiap kartu -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
+                        ${MemberCard(name)}
+                    </div>`).join('')}
+                </div>`;
+            };
+            
+            // Render halaman "Tentang" dengan struktur baru
+            content=`<div class="pt-40 max-w-7xl mx-auto px-6 pb-32">
+                <div class="text-center mb-20 max-w-6xl mx-auto"><h1 class="text-6xl font-bold font-serif mb-8 text-slate-900">Profil Satuan</h1><p class="text-3xl text-slate-500 font-serif italic max-w-4xl mx-auto leading-relaxed border-y border-slate-100 py-10">"${window.appData.profile.visi}"</p></div>
+                <div class="grid md:grid-cols-2 gap-12 mb-32 max-w-6xl mx-auto"><div class="bg-white p-12 rounded-[3rem] shadow-card border border-blue-100"><h3 class="text-2xl font-bold text-pti mb-8 flex items-center gap-4 font-serif"><i class="fa-solid fa-bullseye bg-blue-50 p-3 rounded-xl"></i> Misi Kami</h3><ul class="space-y-6">${(window.appData.profile.misi||[]).map(m=>`<li class="flex gap-5 text-slate-600 leading-relaxed text-lg"><i class="fa-solid fa-check text-white bg-green-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] mt-1 shadow-md"></i> <span>${m}</span></li>`).join('')}</ul></div><div class="bg-pti text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden"><div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div><h3 class="text-2xl font-bold mb-8 flex items-center gap-4 font-serif relative z-10"><i class="fa-solid fa-list-check bg-white/20 p-3 rounded-xl backdrop-blur-sm"></i> Tupoksi</h3><ul class="space-y-6 relative z-10">${(window.appData.profile.tupoksi||[]).map(m=>`<li class="flex gap-5 opacity-90 leading-relaxed text-lg"><i class="fa-solid fa-angle-right mt-1.5"></i> <span>${m}</span></li>`).join('')}</ul></div></div>
+                
+                <!-- STRUKTUR ORGANISASI (Tiered Layout) -->
+                <h2 class="text-4xl font-bold text-center mb-16 font-serif text-slate-900">Struktur Organisasi</h2>
+                <div class="org-container">
+                    <div class="org-tier single">
+                        ${MemberCard("Zairin")}
+                    </div>
+                    <div class="line-down"></div>
+                    <div class="relative pt-16">
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
+                        ${MemberCard("Dino Manarso")}
+                    </div>
+                    <div class="line-down"></div>
+                    
+                    <!-- Tier Anggota (Setara) -->
+                    <div class="org-tier">
+                        <!-- Garis Konektor Horizontal -->
+                        <div class="absolute top-16 left-0 right-0 h-0.5 bg-slate-200" style="max-width: 90%; margin: 0 auto;"></div>
+                        <!-- Garis Konektor Vertikal (tengah) -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
+
+                        ${["Hardiansyah", "Fauzi Kasran", "Endang Lestasi", "Iwan Padeli", "Wan Junaidi", "Supriyadi", "Apria Rico"].map(name => `
+                        <div class="relative pt-16">
+                            <!-- Garis konektor vertikal untuk setiap kartu -->
+                            <div class="absolute top-16 left-1/2 -translate-x-1/2 w-0.5 h-0 bg-slate-200" style="height: 0; top: 0;"></div>
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-slate-200"></div>
+                            ${MemberCard(name)}
+                        </div>`).join('')}
+                    </div>
+                </div>
+            </div>`;
+        }
+
 
         else if(s.page==='lapor') content=`
         <div class="pt-40 max-w-3xl mx-auto px-6 pb-40">
@@ -646,3 +1034,5 @@
   </script>
  </body>
 </html>
+
+
