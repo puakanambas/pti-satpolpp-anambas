@@ -672,7 +672,7 @@
 
     window.deleteItem_DB = (col, id) => { document.getElementById('confirmYesBtn').onclick = async () => { try { await deleteDoc(doc(db, col, id)); window.appData[col]=window.appData[col].filter(x=>x.id!==id); render(); showToast("Terhapus"); } catch(e){ showToast("Gagal", true); } document.getElementById('confirmModal').close(); }; document.getElementById('confirmModal').showModal(); }
     
-    // --- PERUBAHAN 1: Modifikasi openEditor untuk 'articles' ---
+    // --- Modifikasi openEditor untuk 'articles' ---
     window.openEditor = (t, id=null) => {
         const item = id ? window.appData[t].find(x => x.id === id) : null;
 
@@ -692,7 +692,7 @@
                 </select>
                 <input type="date" id="fDate" class="${InpStyle} mb-0" value="${item?.date||''}">
             </div>
-            <!-- PERUBAHAN 2: Placeholder diubah -->
+            <!-- Placeholder diubah -->
             <textarea id="fContent" class="${InpStyle} h-32" placeholder="Isi Berita / Uraian Regulasi...">${item?.content||''}</textarea>
             
             <!-- Tambahan field untuk Regulasi -->
@@ -723,7 +723,7 @@
         document.body.appendChild(modal);
     }
     
-    // --- PERUBAHAN 3: submitEditor untuk 'articles' diupdate ---
+    // --- submitEditor untuk 'articles' diupdate ---
     window.submitEditor = async (t, id) => {
         let d={};
         
@@ -793,8 +793,11 @@
                     <div class="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-full border border-slate-200/60 backdrop-blur-sm">
                         ${['home','berita','galeri','regulasi','tentang'].map(p=>`<button onclick="navigate('${p}')" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-300 ${s.page===p?'bg-white text-pti shadow-sm scale-105':'text-slate-500 hover:text-pti hover:bg-slate-100'}">${p==='home'?'Beranda':p}</button>`).join('')}
                     </div>
+                    <!-- PERUBAHAN Tombol Login Desktop -->
                     <div class="hidden lg:flex items-center gap-3">
                         <button onclick="${s.user?"navigate('admin')":"navigate('lapor')"}" class="bg-pti text-white px-7 py-3 rounded-full text-xs font-bold shadow-lg shadow-pti/20 hover:bg-pti-dark hover:shadow-pti/40 transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-0.5"><i class="fa-solid ${s.user?'fa-user-gear':'fa-bullhorn'}"></i> ${s.user?'Admin Dashboard':'Lapor WBS'}</button>
+                        <!-- Ini tombol login untuk desktop, muncul saat s.user (user) TIDAK login -->
+                        ${!s.user?`<button onclick="document.getElementById('loginModal').showModal()" class="w-12 h-12 bg-slate-100 text-slate-600 rounded-full text-lg flex items-center justify-center hover:bg-pti hover:text-white transition" title="Admin Login"><i class="fa-solid fa-user-shield"></i></button>`:''}
                     </div>
                     <button onclick="toggleMobile()" class="lg:hidden text-2xl text-slate-800 w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition"><i class="fa-solid fa-bars"></i></button>
                 </div>
@@ -891,7 +894,7 @@
                         <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 px-2">Halaman Depan</div>
                         ${['hero','commander','features'].map(t=>`<button onclick="window.state.adminTab='${t}';window.state.adminSidebar=false;render()" class="w-full text-left px-5 py-3.5 rounded-xl font-semibold text-sm capitalize transition-all duration-300 ${s.adminTab===t?'bg-pti text-white shadow-glow scale-[1.02]':'text-slate-400 hover:bg-slate-800 hover:text-white'} flex items-center gap-3"><i class="fa-solid fa-circle text-[6px] ${s.adminTab===t?'opacity-100':'opacity-30'}"></i> ${t==='features'?'Layanan (Tusi)':t}</button>`).join('')}
                         <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-6 mb-2 px-2">Data & Konten</div>
-                        <!-- PERUBAHAN 4: Menghapus 'regulations' dari sidebar -->
+                        <!-- Menghapus 'regulations' dari sidebar -->
                         ${['articles','members','gallery'].map(t=>`<button onclick="window.state.adminTab='${t}';window.state.adminSidebar=false;render()" class="w-full text-left px-5 py-3.5 rounded-xl font-semibold text-sm capitalize transition-all duration-300 ${s.adminTab===t?'bg-pti text-white shadow-glow scale-[1.02]':'text-slate-400 hover:bg-slate-800 hover:text-white'} flex items-center gap-3"><i class="fa-solid fa-circle text-[6px] ${s.adminTab===t?'opacity-100':'opacity-30'}"></i> ${t==='gallery'?'Galeri Foto':t==='articles'?'Berita & Regulasi':t}</button>`).join('')}
                         <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-6 mb-2 px-2">Laporan Masyarakat</div>
                         <button onclick="window.state.adminTab='reports';window.state.adminSidebar=false;render()" class="w-full text-left px-5 py-3.5 rounded-xl font-semibold text-sm capitalize transition-all duration-300 ${s.adminTab==='reports'?'bg-red-600 text-white shadow-glow scale-[1.02]':'text-slate-400 hover:bg-slate-800 hover:text-white'} flex items-center gap-3"><i class="fa-solid fa-inbox"></i> Laporan Masuk</button>
@@ -1020,7 +1023,7 @@
                 <div class="grid md:grid-cols-3 gap-10">${limitedNews.map(a=>`<div onclick="window.viewArticle('${a.id}')" class="bg-white rounded-[2rem] overflow-hidden shadow-card border border-blue-100 cursor-pointer group hover:-translate-y-2 transition-all duration-500"><div class="h-64 overflow-hidden bg-slate-100 relative"><img src="${a.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000"><div class="absolute top-5 left-5 bg-white/90 backdrop-blur px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-pti shadow-lg">${a.cat||'Giat'}</div></div><div class="p-8"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-regular fa-clock"></i> ${a.date}</div><h3 class="text-xl font-bold text-slate-800 font-serif leading-snug mb-4 group-hover:text-pti transition">${a.title}</h3><div class="text-xs font-bold text-slate-300 group-hover:text-pti transition flex items-center gap-2">Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i></div></div></div>`).join('')}</div>
             </section>`;
         }
-        // --- PERUBAHAN 5: Halaman 'regulasi' mengambil data dari 'articles' ---
+        // --- Halaman 'regulasi' mengambil data dari 'articles' ---
         else if(s.page==='regulasi') {
             const allRegs = (window.appData.articles || []).filter(a => a.cat && a.cat.toLowerCase() === 'regulasi');
             
@@ -1049,7 +1052,7 @@
 
                 <div class="grid gap-5 animate-fade-in">
                     ${filtered.length ? filtered.map(r=>`
-                    <!-- PERUBAHAN 6: Menampilkan uraian (r.content) -->
+                    <!-- Menampilkan uraian (r.content) -->
                     <div class="bg-white p-8 rounded-3xl shadow-soft border border-blue-100 hover:border-pti/30 transition group hover:-translate-y-1 duration-300">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-8">
@@ -1076,7 +1079,7 @@
                 </div>
             </div>`;
         }
-        // --- PERUBAHAN 7: Halaman 'berita' mem-filter 'Regulasi' ---
+        // --- Halaman 'berita' mem-filter 'Regulasi' ---
         else if(s.page==='berita') {
             const itemsPerPage = 6;
             const allArticles = (window.appData.articles || []).filter(a => !a.cat || a.cat.toLowerCase() !== 'regulasi');
@@ -1255,5 +1258,3 @@
   </script>
  </body>
 </html>
-
-
